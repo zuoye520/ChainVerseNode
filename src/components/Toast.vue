@@ -1,7 +1,7 @@
 <template>
   <Transition name="toast">
     <div 
-      v-if="toast.show" 
+      v-if="toastState.show" 
       class="toast"
       :class="toastClass"
     >
@@ -11,7 +11,7 @@
           class="toast-icon"
           v-if="toastIcon"
         />
-        <span>{{ toast.message }}</span>
+        <span>{{ toastState.message }}</span>
       </div>
     </div>
   </Transition>
@@ -24,30 +24,19 @@ import {
   InformationCircleIcon,
   XCircleIcon
 } from '@heroicons/vue/24/outline'
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 
-const props = defineProps({
-  toast: {
-    type: Object,
-    required: true,
-    default: () => ({
-      show: false,
-      message: '',
-      type: 'info',
-      duration: 3000
-    })
-  }
-})
+const toastState = inject('toastState')
 
 const toastClass = computed(() => ({
-  'toast-info': props.toast.type === 'info',
-  'toast-success': props.toast.type === 'success',
-  'toast-error': props.toast.type === 'error',
-  'toast-warning': props.toast.type === 'warning'
+  'toast-info': toastState.value.type === 'info',
+  'toast-success': toastState.value.type === 'success',
+  'toast-error': toastState.value.type === 'error',
+  'toast-warning': toastState.value.type === 'warning'
 }))
 
 const toastIcon = computed(() => {
-  switch (props.toast.type) {
+  switch (toastState.value.type) {
     case 'success':
       return CheckCircleIcon
     case 'error':

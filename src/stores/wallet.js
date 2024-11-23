@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { walletService } from '../services/wallet'
-
+import { CHAINS } from '../config'
 export const useWalletStore = defineStore('wallet', () => {
   const account = ref(null)
   const chainInfo = ref(null)
@@ -13,6 +13,10 @@ export const useWalletStore = defineStore('wallet', () => {
   const shortAddress = computed(() => {
     if (!account.value) return ''
     return `${account.value.slice(0, 6)}...${account.value.slice(-4)}`
+  })
+  const currentChainConfig = computed(() => {
+    if (!chainInfo.value) return ''
+    return CHAINS[chainInfo.value.chainId*1];
   })
 
   async function connect() {
@@ -92,6 +96,13 @@ export const useWalletStore = defineStore('wallet', () => {
       throw new Error(error)
     }
   }
+  async function contractCall(data){
+    try {
+     return await walletService.nabox.contractCall(data)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
   // 初始化钱包状态
   async function init() {
     if (walletService.isNaboxInstalled()) {
@@ -123,6 +134,8 @@ export const useWalletStore = defineStore('wallet', () => {
     disconnect,
     init,
     checkNetwork,
-    invokeView
+    invokeView,
+    contractCall,
+    currentChainConfig
   }
 })

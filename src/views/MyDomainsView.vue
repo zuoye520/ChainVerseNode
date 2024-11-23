@@ -83,7 +83,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, onBeforeMount, onUpdated, computed } from 'vue'
+import { ref, inject,getCurrentInstance,onMounted, onUnmounted, onBeforeMount, onUpdated, computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useWalletStore } from '../stores/wallet'
+const walletStore = useWalletStore()
+const { currentChainConfig, account } = storeToRefs(walletStore)
+// 获取全局配置
+const { proxy } = getCurrentInstance()
+const { CHAINS,CONFIG, CONSTANTS } = proxy.$config
+const loading = inject('loading');
+const toast = inject('toast');
 import { 
   SparklesIcon, 
   ArrowRightIcon, 
@@ -115,6 +124,17 @@ const domains = ref([
   }
 ])
 
+// Computed properties
+const totalRewards = computed(() => {
+  // Calculate total rewards
+  return '865,316.0023'
+})
+
+const unclaimedRewards = computed(() => {
+  // Calculate unclaimed rewards
+  return '386,383.9192'
+})
+
 onBeforeMount(() => {
   console.log('Component will be mounted')
   initializeData()
@@ -123,6 +143,7 @@ onBeforeMount(() => {
 onMounted(() => {
   console.log('Component mounted')
   loadDomains()
+  loadRewards()
 })
 
 onUpdated(() => {
@@ -141,10 +162,40 @@ const initializeData = () => {
     domains.value = JSON.parse(savedDomains)
   }
 }
-
-const loadDomains = () => {
+/**
+ * 获取Domain数据
+ */
+const loadDomains = async () => {
   // Load domain data
   console.log('Loading domain data')
+  // loading.show()
+  const data = {
+      contractAddress: currentChainConfig.value.contracts.domainAddress,
+      methodName: "userDomains",
+      methodDesc: "(Address user) return UserInfo",
+      args:[account.value]
+  }
+  console.log('data:',data)
+  const result = await walletStore.invokeView(data)
+  console.log('result:',result)
+  // loading.hide()
+}
+/**
+ * 获取Rewards数据
+ */
+const loadRewards = async ()=>{
+  const data = {
+      contractAddress: currentChainConfig.value.contracts.domainAddress,
+      methodDesc: "(Address user) return String",
+      args:[account.value]
+  }
+  console.log('getUserRewardReceived params:',{...data,...{methodName:"getUserRewardReceived"}})
+  console.log('pendingAward params:',{...data,...{methodName:"pendingAward"}})
+  const results = await Promise.all([
+      walletStore.invokeView({...data,...{methodName:"getUserRewardReceived"}}),
+      walletStore.invokeView({...data,...{methodName:"pendingAward"}}),
+    ]);
+    console.log('result:',results)
 }
 
 const saveDomainSettings = () => {
@@ -160,34 +211,72 @@ const formatDate = (dateString) => {
     day: 'numeric'
   })
 }
-
-const claimAllRewards = () => {
+/**
+ * 领取奖励
+ */
+const claimAllRewards = async () => {
   console.log('Claiming all rewards')
+  const data = {
+        from: account.value,
+        value:0,
+        contractAddress: currentChainConfig.value.contracts.domainAddress,
+        methodName: "receiveAward",
+        methodDesc: "()",
+        
+    }
+    console.log('data:',data)
+    const result = await walletStore.contractCall(data) // 返回交易hash
+    console.log('claimAllRewards result', result)
 }
-
-const setPrimaryIdentity = (domain) => {
+/**
+ * 设置主域名
+ * @param domain 
+ */
+const setPrimaryIdentity = async (domain) => {
+  console.log('setPrimaryIdentity',domain)
   domains.value.forEach(d => d.isPrimary = false)
   domain.isPrimary = true
   saveDomainSettings()
-}
+  const data = {
+        from: account.value,
+        value:0,
+        contractAddress: currentChainConfig.value.contracts.domainAddress,
+        methodName: "changeMainDomain",
+        methodDesc: "(String domain)",
+        args: [domain.value.name],
+    }
+  console.log('setPrimaryIdentity params:',data)
+  const result = await walletStore.contractCall(data) // 返回交易hash
+  console.log('setPrimaryIdentity result', result)
 
-const toggleRewards = (domain) => {
+}
+/**
+ * 激活权益
+ * @param domain 
+ */
+const toggleRewards = async (domain) => {
   domain.rewardsActive = !domain.rewardsActive
   saveDomainSettings()
-}
 
+  const data = {
+        from: account.value,
+        value:0,
+        contractAddress: currentChainConfig.value.contracts.domainAddress,
+        methodName: "activeAward",
+        methodDesc: "(String domain)",
+        args: [domain.value.name],
+    }
+  console.log('toggleRewards params:',data)
+  const result = await walletStore.contractCall(data) // 返回交易hash
+  console.log('toggleRewards result', result)
+}
+/**
+ * 转账域名
+ * @param domain 
+ */
 const transferDomain = (domain) => {
   console.log('Transferring domain', domain.name)
 }
 
-// Computed properties
-const totalRewards = computed(() => {
-  // Calculate total rewards
-  return '865,316.0023'
-})
 
-const unclaimedRewards = computed(() => {
-  // Calculate unclaimed rewards
-  return '386,383.9192'
-})
 </script>

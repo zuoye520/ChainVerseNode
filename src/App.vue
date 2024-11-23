@@ -2,9 +2,8 @@
   <div class="app">
     <Header />
     <router-view></router-view>
-    <Toast :toast="$toast.toast" />
+    <Toast />
     <Loading :show="isLoading" :text="loadingText" />
-    
   </div>
 </template>
 
@@ -14,10 +13,11 @@ import Header from './components/Header.vue'
 import Loading from './components/Loading.vue'
 import Toast from './components/Toast.vue'
 
+// Loading state
 const isLoading = ref(false)
 const loadingText = ref('Loading')
 
-// Provide loading control to all components
+// Loading provider
 provide('loading', {
   show: (text = 'Loading') => {
     loadingText.value = text
@@ -27,6 +27,45 @@ provide('loading', {
     isLoading.value = false
   }
 })
+
+// Toast state
+const toast = ref({
+  show: false,
+  message: '',
+  type: 'info',
+  duration: 3000
+})
+
+let toastTimeout = null
+
+// Toast provider
+provide('toast', {
+  show: (message, type = 'info', duration = 3000) => {
+    if (toastTimeout) {
+      clearTimeout(toastTimeout)
+    }
+    
+    toast.value = {
+      show: true,
+      message,
+      type,
+      duration
+    }
+
+    toastTimeout = setTimeout(() => {
+      toast.value.show = false
+    }, duration)
+  },
+  hide: () => {
+    toast.value.show = false
+    if (toastTimeout) {
+      clearTimeout(toastTimeout)
+    }
+  }
+})
+
+// Provide toast state
+provide('toastState', toast)
 </script>
 
 <style>

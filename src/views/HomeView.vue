@@ -54,7 +54,7 @@
           <div class="domain-info">
             <h3>{{ domain.name }}</h3>
             <div class="domain-meta">
-              <p class="domain-price">{{ $format.fromAmount(domain.price) }}</p>
+              <p class="domain-price">{{ $format.fromAmount(domain.price) }} NULS</p>
               <span v-if="domain.registered" class="status-tag registered">
                 Already registered
               </span>
@@ -79,20 +79,21 @@
 </template>
 
 <script setup>
+import '../styles/HomeView.css'
 import { ref, inject, getCurrentInstance, onMounted, onUnmounted, onBeforeMount, onUpdated } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useWalletStore } from '../stores/wallet'
 const walletStore = useWalletStore()
+const { currentChainConfig, account } = storeToRefs(walletStore)
 // 获取全局配置
 const { proxy } = getCurrentInstance()
-const { CONFIG, CONSTANTS } = proxy.$config
-
-
+const { CHAINS,CONFIG, CONSTANTS } = proxy.$config
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import Features from '../components/Features.vue'
-// 使用 Loading
 
-import '../styles/HomeView.css'
 const loading = inject('loading');
+const toast = inject('toast');
+//Initialize data
 const searchQuery = ref('')
 const searchResults = ref([])
 const showModal = ref(false)
@@ -104,8 +105,6 @@ onBeforeMount(() => {
 
 onMounted(() => {
   console.log('Component mounted')
-  // success('操作成功！')
-  // loading.show()
   window.addEventListener('resize', handleResize)
   setupCircuitAnimation()
 })
@@ -137,15 +136,18 @@ const setupCircuitAnimation = () => {
 }
 
 const searchDomain = async() => {
-  proxy.$toast.showToast('操作成功', 'success')
-  return
-  if (!searchQuery.value) return
+  // console.log('currentChainConfig:',currentChainConfig)
+  if (!searchQuery.value) {
+    toast.show('Please enter your digital identity', 'warning')
+    return;
+  }
   loading.show()
   const data = {
-      contractAddress: "tNULSeBaN9B1GTocxwZhUpBjqdsrTeJNkksVZC",
+      contractAddress: currentChainConfig.value.contracts.domainAddress,
       methodName: "getPriceByDomain",
       methodDesc: "(String domain) return String[]",
   }
+  console.log('data:',data)
   const searchList = [searchQuery.value+'.nuls',searchQuery.value+'1.nuls','my'+searchQuery.value+'.nuls'];
   const results = await Promise.all([
       walletStore.invokeView({...data,...{args: [searchList[0]]}}),
@@ -165,7 +167,30 @@ const searchDomain = async() => {
   loading.hide()
   showModal.value = true
 }
+const registerDomain = async(domain)=>{
+  try {
+    console.log('domain:',domain.name)
+    const data = {
+        from: account.value,
+        value: domain.price,
+        contractAddress: currentChainConfig.value.contracts.domainAddress,
+        methodName: "mint",
+        methodDesc: "(String domain)",
+        args: [domain.name],
+        multyAssetValues: []
+    }
+    console.log('data:',data)
+    const result = await walletStore.contractCall(data) // 返回交易hash
+    console.log('result:',result)
+    showModal.value = false;
+    toast.show('Transaction sent successfully', 'success')
+    
+  } catch (error) {
+    console.error(error)
+  }
+  
 
+}
 const closeModal = () => {
   showModal.value = false
 }

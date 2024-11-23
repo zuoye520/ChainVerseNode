@@ -1,26 +1,19 @@
 // 网络配置
-export const NETWORKS = {
-  MAINNET: {
+export const CHAINS = {
+  1: {
     chainId: 1,
     name: 'NULS',
     symbol: 'NULS',
     decimals: 8,
-    rpc: 'https://api.nuls.io',
-    explorer: 'https://nulscan.io',
+    rpc: 'https://testnet.api.nuls.io', 
+    explorer: 'https://testnet.nulscan.io',
     contracts: {
-      // NULS AI 身份合约
-      IDENTITY: {
-        address: 'NULSd6HgYx7qk6xhDPh8yZvfkaEQvqE1hiWEf', // 主网合约地址
-        startHeight: 1234567,  // 合约部署高度
-      },
-      // 奖励合约
-      REWARDS: {
-        address: 'NULSd6HgbG3U8h6vDkgbG3U8h6vDkgbG3U8', 
-        startHeight: 1234567,
-      }
+      domainAddress:'tNULSeBaMvEtDfvZuukDf2mVyfGo3DdiN8KLRG',
+      nrc721Address: 'tNULSeBaN2inyAkyfk7AW5uAUf6cQr4BGSZCCt',
+      stakeAddress:'tNULSeBaMx7ZoVNUyf6HHCySkmumRFsajahL2P'
     }
   },
-  TESTNET: {
+  2: {
     chainId: 2,
     name: 'NULS Testnet',
     symbol: 'NULS',
@@ -28,22 +21,24 @@ export const NETWORKS = {
     rpc: 'https://testnet.api.nuls.io', 
     explorer: 'https://testnet.nulscan.io',
     contracts: {
-      IDENTITY: {
-        address: 'tNULSeBaMvEtDfvZuukDf2mVyfGo3DdiN8KLRG',  // 测试网合约地址
-        startHeight: 123456,
-      },
-      REWARDS: {
-        address: 'tNULSeBaMoodYW7AqyJrgYdWiJ6nfwfVHHHyXm',
-        startHeight: 123456,
-      }
+      domainAddress:'tNULSeBaN9B1GTocxwZhUpBjqdsrTeJNkksVZC',
+      nrc721Address: 'tNULSeBaN2inyAkyfk7AW5uAUf6cQr4BGSZCCt',
+      stakeAddress:'tNULSeBaMx7ZoVNUyf6HHCySkmumRFsajahL2P'
     }
   }
 }
+//https://app.pinata.cloud/ 配置
+export const IPFS_CONFIG = {
+  apiKey: "60dd3f8d985638706a26",
+  apiSecret: "e6bef01c83276448ad5bbea9b144b6d6835d074e1baab40f6b3eb66c5076335f",
+  gateway:"maroon-necessary-wallaby-5.mypinata.cloud",
+  jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJiZTc5MzM4ZC1hYTJkLTRkYWYtYWIzZi0zMDBmYjg0NDlhMjUiLCJlbWFpbCI6Inp6ODc3MjAwNzcyQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6IkZSQTEifSx7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6Ik5ZQzEifV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI2MGRkM2Y4ZDk4NTYzODcwNmEyNiIsInNjb3BlZEtleVNlY3JldCI6ImU2YmVmMDFjODMyNzY0NDhhZDViYmVhOWIxNDRiNmQ2ODM1ZDA3NGUxYmFhYjQwZjZiM2ViNjZjNTA3NjMzNWYiLCJleHAiOjE3NjM5MDU1Mzl9.EwE2ATj18-USExEZ5Jb9cLAPSOo1yyh1xez1DcNJFAs"
+}
 
 // 当前环境配置
-export const CURRENT_NETWORK = import.meta.env.VITE_APP_ENV === 'mainnet' 
-  ? NETWORKS.MAINNET 
-  : NETWORKS.TESTNET
+// export const CURRENT_NETWORK = import.meta.env.VITE_APP_ENV === 'mainnet' 
+//   ? NETWORKS.MAINNET 
+//   : NETWORKS.TESTNET
 
 // API 配置
 export const API = {
