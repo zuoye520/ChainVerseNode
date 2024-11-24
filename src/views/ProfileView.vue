@@ -132,6 +132,8 @@
 
 <script setup>
 import { ref, onMounted, onBeforeMount, onUpdated, onUnmounted } from 'vue'
+import { useWalletStore } from '../stores/wallet'
+const walletStore = useWalletStore()
 import { CameraIcon } from '@heroicons/vue/24/outline'
 import '../styles/ProfileView.css'
 
@@ -197,5 +199,8 @@ const saveProfileToLocalStorage = () => {
 const saveProfile = () => {
   saveProfileToLocalStorage()
   console.log('Profile saved')
+}
+const uploadAvatar = async ()=>{
+  const  result = await walletStore.uploadFile()
 }
 </script>
