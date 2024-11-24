@@ -21,6 +21,39 @@
         <router-link to="/my-domains" @click="closeMenu">My Identity</router-link>
       </div>
       <div class="right-section">
+        <!-- 社交菜单按钮 -->
+        <button class="menu-dots-btn" @click="toggleSocialMenu">
+          <EllipsisHorizontalIcon class="dots-icon" />
+        </button>
+        
+        <!-- 社交菜单弹层 -->
+        <div v-if="showSocialMenu" class="social-menu" @click.stop>
+          <div class="menu-section">
+            <h4 class="section-title">Help & Support</h4>
+            <a href="https://docs.nuls.io" target="_blank" class="menu-item">
+              <BookOpenIcon class="menu-icon" />
+              <div class="menu-item-content">
+                <span class="menu-item-title">Documentation</span>
+                <span class="menu-item-description">Learn more about NULS AI</span>
+              </div>
+            </a>
+          </div>
+          <div class="menu-section">
+            <h4 class="section-title">Community</h4>
+            <div class="social-buttons">
+              <a href="https://github.com/nuls-io" target="_blank" class="social-button" title="GitHub">
+                <img src="/github.svg" alt="GitHub" class="social-icon">
+              </a>
+              <a href="https://discord.gg/nuls" target="_blank" class="social-button" title="Discord">
+                <img src="/discord.svg" alt="Discord" class="social-icon">
+              </a>
+              <a href="https://twitter.com/nuls" target="_blank" class="social-button" title="Twitter">
+                <img src="/twitter.svg" alt="Twitter" class="social-icon">
+              </a>
+            </div>
+          </div>
+        </div>
+
         <WalletSection />
         <button class="menu-btn" @click="toggleMenu" :class="{ 'active': isMenuOpen }">
           <span></span>
@@ -33,10 +66,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import WalletSection from './WalletSection.vue'
+import { EllipsisHorizontalIcon, BookOpenIcon } from '@heroicons/vue/24/outline'
 
 const isMenuOpen = ref(false)
+const showSocialMenu = ref(false)
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
@@ -45,9 +80,29 @@ const toggleMenu = () => {
 const closeMenu = () => {
   isMenuOpen.value = false
 }
+
+const toggleSocialMenu = (event) => {
+  event.stopPropagation()
+  showSocialMenu.value = !showSocialMenu.value
+}
+
+const handleClickOutside = (event) => {
+  if (showSocialMenu.value && !event.target.closest('.menu-dots-btn')) {
+    showSocialMenu.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <style scoped>
+/* 基础样式 */
 .header {
   background: rgba(10, 11, 14, 0.8);
   backdrop-filter: blur(10px);
@@ -67,6 +122,7 @@ const closeMenu = () => {
   align-items: center;
 }
 
+/* Logo 样式 */
 .logo {
   text-decoration: none;
   display: flex;
@@ -97,6 +153,153 @@ const closeMenu = () => {
   position: relative;
 }
 
+/* 社交菜单样式 */
+.menu-dots-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.3s;
+  margin-right: 0.5rem;
+}
+
+.menu-dots-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+}
+
+.dots-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--text);
+}
+
+.social-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: rgba(10, 11, 14, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  width: 280px;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+}
+
+.menu-section {
+  padding: 0.75rem;
+}
+
+.menu-section:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-title {
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.menu-item {
+  width: 100%;
+  padding: 0.75rem;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  text-decoration: none;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(2px);
+}
+
+.menu-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  color: var(--text);
+}
+
+.menu-item:hover .menu-icon {
+  color: var(--primary);
+}
+
+.menu-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.menu-item-title {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.menu-item-description {
+  color: var(--text);
+  font-size: 0.8rem;
+}
+
+.social-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.75rem;
+}
+
+.social-button {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.social-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.social-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* 动画 */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 其他样式保持不变 */
 .ai-container {
   position: relative;
   height: 2rem;
@@ -163,48 +366,6 @@ const closeMenu = () => {
     transparent
   );
   opacity: 0.5;
-}
-
-@keyframes circuit-animate {
-  from {
-    background-position: 0 0, 0 100%;
-  }
-  to {
-    background-position: 100% 0, 100% 100%;
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-@keyframes pulse-animate {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.2;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-}
-
-@keyframes glow-animate {
-  0%, 100% {
-    opacity: 0.2;
-  }
-  50% {
-    opacity: 0.3;
-  }
 }
 
 .nav-links {
@@ -285,6 +446,48 @@ const closeMenu = () => {
   transform: translateY(-9.5px) rotate(-45deg);
 }
 
+@keyframes circuit-animate {
+  from {
+    background-position: 0 0, 0 100%;
+  }
+  to {
+    background-position: 100% 0, 100% 100%;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes pulse-animate {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}
+
+@keyframes glow-animate {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
 @media (max-width: 768px) {
   .nav-container {
     padding: 1rem;
@@ -317,6 +520,29 @@ const closeMenu = () => {
 
   .menu-btn {
     display: flex;
+  }
+
+  .social-menu {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
+    border-radius: 12px 12px 0 0;
+    animation: slideUp 0.2s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 

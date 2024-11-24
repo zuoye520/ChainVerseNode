@@ -9,65 +9,26 @@
         </router-link>
       </div>
 
-      <!-- Rewards Overview Section -->
-      <div class="rewards-stats" v-if="domains.length">
-        <div class="stats-grid">
-          <div class="stat-item">
-            <div class="stat-label">Total Rewards</div>
-            <div class="stat-value">865,316.0023 NULS</div>
-            <div class="stat-usd">≈ $31.75</div>
-          </div>
+      <!-- 有域名时显示 -->
+      <template v-if="domains.length">
+        <RewardsStats
+          :total-rewards="totalRewards"
+          :total-rewards-usd="totalRewardsUsd"
+          :unclaimed-rewards="unclaimedRewards"
+          :unclaimed-rewards-usd="unclaimedRewardsUsd"
+          @claim-rewards="claimAllRewards"
+        />
+        
+        <DomainsList
+          :domains="domains"
+          @transfer="transferDomain"
+          @set-primary="setPrimaryIdentity"
+          @toggle-rewards="toggleRewards"
+        />
+      </template>
 
-          <div class="stat-item">
-            <div class="stat-label">Unclaimed Rewards</div>
-            <div class="stat-value">386,383.9192 NULS</div>
-            <div class="stat-usd">≈ $16.29</div>
-          </div>
-
-          <div class="stat-item action">
-            <button class="cyber-button claim-all" @click="claimAllRewards">
-              <SparklesIcon class="btn-icon" />
-              Claim All Rewards
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      <div class="domains-grid" v-if="domains.length">
-        <div v-for="domain in domains" :key="domain.name" class="domain-card">
-          <div class="domain-header">
-            <h3>{{ domain.name }}</h3>
-            <span class="registration-date">{{ formatDate(domain.time) }}</span>
-          </div>
-
-          <div class="domain-actions">
-            <button 
-              class="cyber-button secondary"
-              :class="{ 'active': domain.isPrimary }"
-              @click="setPrimaryIdentity(domain)"
-            >
-              <StarIcon class="btn-icon" />
-              <span class="btn-text">{{ domain.isPrimary ? 'Primary Identity' : 'Set as Primary' }}</span>
-            </button>
-
-            <button 
-              class="cyber-button secondary"
-              :class="{ 'active': domain.rewardsActive }"
-              @click="toggleRewards(domain)"
-            >
-              <BoltIcon class="btn-icon" />
-              <span class="btn-text">{{ domain.rewardsActive ? 'Rewards Active' : 'Activate Rewards' }}</span>
-            </button>
-
-            <button class="cyber-button secondary" @click="transferDomain(domain)">
-              <ArrowRightIcon class="btn-icon" />
-              <span class="btn-text">Transfer</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="no-domains" v-else>
+      <!-- 无域名时显示 -->
+      <div v-else class="no-domains">
         <div class="empty-state-icon">
           <DocumentPlusIcon class="icon" />
         </div>
@@ -79,204 +40,377 @@
         </router-link>
       </div>
     </div>
+
+    <!-- Transfer Modal -->
+    <TransferModal
+      v-model:show="showTransferModal"
+      :domain="selectedDomain"
+      @transfer="handleTransfer"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, inject,getCurrentInstance,onMounted, onUnmounted, onBeforeMount, onUpdated, computed } from 'vue'
+import { ref, inject, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useWalletStore } from '../stores/wallet'
+import { PlusIcon, DocumentPlusIcon } from '@heroicons/vue/24/outline'
+import RewardsStats from '../components/RewardsStats.vue'
+import DomainsList from '../components/DomainsList.vue'
+import TransferModal from '../components/TransferModal.vue'
+
 const walletStore = useWalletStore()
 const { currentChainConfig, account } = storeToRefs(walletStore)
-// 获取全局配置
-const { proxy } = getCurrentInstance()
-const { CHAINS,CONFIG, CONSTANTS } = proxy.$config
-const loading = inject('loading');
-const toast = inject('toast');
-import { 
-  SparklesIcon, 
-  ArrowRightIcon, 
-  PlusIcon,
-  DocumentPlusIcon,
-  StarIcon,
-  BoltIcon
-} from '@heroicons/vue/24/outline'
-import '../styles/MyDomainsView.css'
+const loading = inject('loading')
+const toast = inject('toast')
 
+// 域名列表数据
 const domains = ref([
   {
     name: 'test.nuls',
     time: '2024-10-01 21:56:10',
     isPrimary: true,
-    rewardsActive: true
+    rewardsActive: true,
+    showActions: false
   },
   {
     name: 'test2.nuls',
     time: '2024-10-01 21:56:20',
     isPrimary: false,
-    rewardsActive: false
+    rewardsActive: false,
+    showActions: false
   },
   {
     name: 'test3.nuls',
     time: '2024-10-23 18:41:40',
     isPrimary: false,
-    rewardsActive: true
+    rewardsActive: true,
+    showActions: false
   }
 ])
+const showTransferModal = ref(false)
+const selectedDomain = ref(null)
 
-// Computed properties
-const totalRewards = computed(() => {
-  // Calculate total rewards
-  return '865,316.0023'
-})
+// 奖励数据
+const totalRewards = ref('0')
+const totalRewardsUsd = ref('0')
+const unclaimedRewards = ref('0')
+const unclaimedRewardsUsd = ref('0')
 
-const unclaimedRewards = computed(() => {
-  // Calculate unclaimed rewards
-  return '386,383.9192'
-})
-
-onBeforeMount(() => {
-  console.log('Component will be mounted')
-  initializeData()
-})
-
-onMounted(() => {
-  console.log('Component mounted')
-  loadDomains()
-  loadRewards()
-})
-
-onUpdated(() => {
-  console.log('Component updated')
-})
-
-onUnmounted(() => {
-  console.log('Component will be unmounted')
-  saveDomainSettings()
-})
-
-const initializeData = () => {
-  // Initialize data
-  const savedDomains = localStorage.getItem('userDomains')
-  if (savedDomains) {
-    domains.value = JSON.parse(savedDomains)
+onMounted(async () => {
+  if (account.value) {
+    await loadDomains()
+    await loadRewards()
   }
-}
-/**
- * 获取Domain数据
- */
+})
+
+// 加载域名列表
 const loadDomains = async () => {
-  // Load domain data
-  console.log('Loading domain data')
-  // loading.show()
-  const data = {
+  try {
+    loading.show('Loading domains...')
+    const data = {
       contractAddress: currentChainConfig.value.contracts.domainAddress,
       methodName: "userDomains",
       methodDesc: "(Address user) return UserInfo",
-      args:[account.value]
+      args: [account.value]
+    }
+    const result = await walletStore.invokeView(data)
+    const list = [
+  {
+    name: 'test.nuls',
+    time: '2024-10-01 21:56:10',
+    isPrimary: true,
+    rewardsActive: true,
+    showActions: false
+  },
+  {
+    name: 'test2.nuls',
+    time: '2024-10-01 21:56:20',
+    isPrimary: false,
+    rewardsActive: false,
+    showActions: false
+  },
+  {
+    name: 'test3.nuls',
+    time: '2024-10-23 18:41:40',
+    isPrimary: false,
+    rewardsActive: true,
+    showActions: false
   }
-  console.log('data:',data)
-  const result = await walletStore.invokeView(data)
-  console.log('result:',result)
-  // loading.hide()
+]
+    domains.value = list
+    // domains.value = result.map(domain => ({
+    //   ...domain,
+    //   showActions: false
+    // }))
+  } catch (error) {
+    console.error('Failed to load domains:', error)
+    toast.show('Failed to load domains', 'error')
+  } finally {
+    loading.hide()
+  }
 }
-/**
- * 获取Rewards数据
- */
-const loadRewards = async ()=>{
-  const data = {
+
+// 加载奖励数据
+const loadRewards = async () => {
+  try {
+    const data = {
       contractAddress: currentChainConfig.value.contracts.domainAddress,
       methodDesc: "(Address user) return String",
-      args:[account.value]
+      args: [account.value]
+    }
+    const [received, pending] = await Promise.all([
+      walletStore.invokeView({...data, methodName: "getUserRewardReceived"}),
+      walletStore.invokeView({...data, methodName: "pendingAward"})
+    ])
+    
+    totalRewards.value = '1'
+    unclaimedRewards.value =  '1'
+    // TODO: Add USD conversion
+    totalRewardsUsd.value = '0'
+    unclaimedRewardsUsd.value = '0'
+  } catch (error) {
+    console.error('Failed to load rewards:', error)
   }
-  console.log('getUserRewardReceived params:',{...data,...{methodName:"getUserRewardReceived"}})
-  console.log('pendingAward params:',{...data,...{methodName:"pendingAward"}})
-  const results = await Promise.all([
-      walletStore.invokeView({...data,...{methodName:"getUserRewardReceived"}}),
-      walletStore.invokeView({...data,...{methodName:"pendingAward"}}),
-    ]);
-    console.log('result:',results)
 }
 
-const saveDomainSettings = () => {
-  // Save domain settings
-  localStorage.setItem('userDomains', JSON.stringify(domains.value))
-}
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
-/**
- * 领取奖励
- */
+// 领取所有奖励
 const claimAllRewards = async () => {
-  console.log('Claiming all rewards')
-  const data = {
-        from: account.value,
-        value:0,
-        contractAddress: currentChainConfig.value.contracts.domainAddress,
-        methodName: "receiveAward",
-        methodDesc: "()",
-        
+  try {
+    loading.show('Claiming rewards...')
+    const data = {
+      from: account.value,
+      value: 0,
+      contractAddress: currentChainConfig.value.contracts.domainAddress,
+      methodName: "receiveAward",
+      methodDesc: "()",
     }
-    console.log('data:',data)
-    const result = await walletStore.contractCall(data) // 返回交易hash
-    console.log('claimAllRewards result', result)
+    await walletStore.contractCall(data)
+    toast.show('Rewards claimed successfully', 'success')
+    await loadRewards()
+  } catch (error) {
+    console.error('Failed to claim rewards:', error)
+    toast.show('Failed to claim rewards', 'error')
+  } finally {
+    loading.hide()
+  }
 }
-/**
- * 设置主域名
- * @param domain 
- */
-const setPrimaryIdentity = async (domain) => {
-  console.log('setPrimaryIdentity',domain)
-  domains.value.forEach(d => d.isPrimary = false)
-  domain.isPrimary = true
-  saveDomainSettings()
-  const data = {
-        from: account.value,
-        value:0,
-        contractAddress: currentChainConfig.value.contracts.domainAddress,
-        methodName: "changeMainDomain",
-        methodDesc: "(String domain)",
-        args: [domain.value.name],
-    }
-  console.log('setPrimaryIdentity params:',data)
-  const result = await walletStore.contractCall(data) // 返回交易hash
-  console.log('setPrimaryIdentity result', result)
 
-}
-/**
- * 激活权益
- * @param domain 
- */
-const toggleRewards = async (domain) => {
-  domain.rewardsActive = !domain.rewardsActive
-  saveDomainSettings()
-
-  const data = {
-        from: account.value,
-        value:0,
-        contractAddress: currentChainConfig.value.contracts.domainAddress,
-        methodName: "activeAward",
-        methodDesc: "(String domain)",
-        args: [domain.value.name],
-    }
-  console.log('toggleRewards params:',data)
-  const result = await walletStore.contractCall(data) // 返回交易hash
-  console.log('toggleRewards result', result)
-}
-/**
- * 转账域名
- * @param domain 
- */
+// 转移域名
 const transferDomain = (domain) => {
-  console.log('Transferring domain', domain.name)
+  selectedDomain.value = domain
+  showTransferModal.value = true
 }
 
+// 处理转移
+const handleTransfer = async ({ domain, recipient }) => {
+  try {
+    loading.show('Transferring domain...')
+    const data = {
+      from: account.value,
+      value: 0,
+      contractAddress: currentChainConfig.value.contracts.domainAddress,
+      methodName: "transfer",
+      methodDesc: "(String domain, Address to)",
+      args: [domain.name, recipient]
+    }
+    await walletStore.contractCall(data)
+    toast.show('Domain transferred successfully', 'success')
+    await loadDomains()
+  } catch (error) {
+    console.error('Transfer failed:', error)
+    toast.show('Failed to transfer domain', 'error')
+    throw error
+  } finally {
+    loading.hide()
+  }
+}
 
+// 设置主域名
+const setPrimaryIdentity = async (domain) => {
+  try {
+    loading.show('Setting primary identity...')
+    const data = {
+      from: account.value,
+      value: 0,
+      contractAddress: currentChainConfig.value.contracts.domainAddress,
+      methodName: "changeMainDomain",
+      methodDesc: "(String domain)",
+      args: [domain.name],
+    }
+    await walletStore.contractCall(data)
+    toast.show('Primary identity updated', 'success')
+    await loadDomains()
+  } catch (error) {
+    console.error('Failed to set primary identity:', error)
+    toast.show('Failed to set primary identity', 'error')
+  } finally {
+    loading.hide()
+  }
+}
+
+// 切换奖励状态
+const toggleRewards = async (domain) => {
+  try {
+    loading.show(domain.rewardsActive ? 'Deactivating rewards...' : 'Activating rewards...')
+    const data = {
+      from: account.value,
+      value: 0,
+      contractAddress: currentChainConfig.value.contracts.domainAddress,
+      methodName: "activeAward",
+      methodDesc: "(String domain)",
+      args: [domain.name],
+    }
+    await walletStore.contractCall(data)
+    toast.show(`Rewards ${domain.rewardsActive ? 'deactivated' : 'activated'} successfully`, 'success')
+    await loadDomains()
+  } catch (error) {
+    console.error('Failed to toggle rewards:', error)
+    toast.show('Failed to toggle rewards', 'error')
+  } finally {
+    loading.hide()
+  }
+}
 </script>
+
+<style scoped>
+.my-domains {
+  padding-top: 80px;
+  min-height: 100vh;
+  background: var(--bg-dark);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  color: white;
+  font-size: 2rem;
+  margin: 0;
+}
+
+.cyber-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.cyber-button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 228, 134, 0.2);
+}
+
+.btn-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Empty State Styles */
+.no-domains {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 2rem;
+  background: rgba(0, 228, 134, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.empty-state-icon::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    var(--primary),
+    transparent
+  );
+  animation: rotate 4s linear infinite;
+}
+
+.empty-state-icon .icon {
+  width: 40px;
+  height: 40px;
+  color: var(--primary);
+  position: relative;
+  z-index: 1;
+}
+
+.no-domains h2 {
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.no-domains p {
+  color: var(--text);
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .cyber-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .no-domains {
+    padding: 2rem 1rem;
+  }
+}
+</style>

@@ -24,11 +24,11 @@
         </div>
 
         <div class="modal-effects">
-          <div class="corner-effect top-left"></div>
+          <!-- <div class="corner-effect top-left"></div>
           <div class="corner-effect top-right"></div>
           <div class="corner-effect bottom-left"></div>
-          <div class="corner-effect bottom-right"></div>
-          <div class="edge-glow"></div>
+          <div class="corner-effect bottom-right"></div> -->
+          <!-- <div class="edge-glow"></div> -->
         </div>
       </div>
     </div>

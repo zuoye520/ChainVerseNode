@@ -55,6 +55,7 @@
               </button>
             </router-link>
           </div>
+          <!-- 
           <div class="menu-section">
             <h4 class="section-title">Settings</h4>
             <button class="menu-item" @click="toggleLanguage">
@@ -65,7 +66,7 @@
               </div>
             </button>
           </div>
-
+        
           <div class="menu-section">
             <h4 class="section-title">Help & Support</h4>
             <a href="https://docs.nuls.io" target="_blank" class="menu-item">
@@ -83,7 +84,7 @@
               </div>
             </a>
           </div>
-
+        -->
           <div class="menu-section">
             <button class="menu-item disconnect" @click="disconnectWallet">
               <ArrowRightOnRectangleIcon class="menu-icon" />
