@@ -5,8 +5,8 @@ export const CHAINS = {
     name: 'NULS',
     symbol: 'NULS',
     decimals: 8,
-    rpc: 'https://testnet.api.nuls.io', 
-    explorer: 'https://testnet.nulscan.io',
+    rpc: 'https://api.nuls.io', 
+    explorer: 'https://nulscan.io',
     contracts: {
       domainAddress:'tNULSeBaMvEtDfvZuukDf2mVyfGo3DdiN8KLRG',
       nrc721Address: 'tNULSeBaN2inyAkyfk7AW5uAUf6cQr4BGSZCCt',
@@ -21,9 +21,9 @@ export const CHAINS = {
     rpc: 'https://beta.api.nuls.io', 
     explorer: 'https://beta.nulscan.io',
     contracts: {
-      domainAddress:'tNULSeBaN9B1GTocxwZhUpBjqdsrTeJNkksVZC',
-      nrc721Address: 'tNULSeBaN2inyAkyfk7AW5uAUf6cQr4BGSZCCt',
-      stakeAddress:'tNULSeBaMx7ZoVNUyf6HHCySkmumRFsajahL2P'
+      domainAddress:'tNULSeBaNBQWMy6bbZ1yJVvbVVozHXFtrv5gxU',
+      nrc721Address: 'tNULSeBaN81Ti1ZtxUVZTTtoHw7wJb5z4xxwWU',
+      stakeAddress:'tNULSeBaMwxYBBqetbUSBe27rPqWKP89h9oy13'
     }
   }
 }

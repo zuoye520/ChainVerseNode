@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { walletService } from '../services/wallet'
 import * as api from '../services/api'
+
 import { CHAINS ,NABOX_DOWNLOAD_URL} from '../config'
 export const useWalletStore = defineStore('wallet', () => {
   const account = ref(null)
@@ -9,12 +10,15 @@ export const useWalletStore = defineStore('wallet', () => {
   const networkStatus = ref({ connected: false, chainId: null, error: null })
   const isConnecting = ref(false)
   const error = ref(null)
+  const nulsBalance = ref(0)
+  const nulsUsdPrice = ref(0)
 
   const isConnected = computed(() => !!account.value)
   const shortAddress = computed(() => {
     if (!account.value) return ''
     return `${account.value.slice(0, 6)}...${account.value.slice(-4)}`
   })
+  
   const currentChainConfig = computed(() => {
     if (!chainInfo.value) return ''
     return CHAINS[chainInfo.value.chainId*1];
@@ -51,6 +55,18 @@ export const useWalletStore = defineStore('wallet', () => {
       chainInfo.value = null
     } finally {
       isConnecting.value = false
+    }
+  }
+
+  async function getBalance(){
+    const balance = await walletService.getNulsBalance();
+    const nulsUsd = await api.nulsUsd();
+    // console.log('balance:',{balance,nulsUsd})
+    nulsBalance.value = balance
+    nulsUsdPrice.value = nulsUsd
+    return {
+      balance,
+      nulsUsd
     }
   }
 
@@ -104,6 +120,20 @@ export const useWalletStore = defineStore('wallet', () => {
       throw new Error(error)
     }
   }
+  async function uploadJson(data={}) {
+    try {
+      return await api.uploadJson(data)
+     } catch (error) {
+       throw new Error(error)
+     }
+  }
+  async function uploadFile(file) {
+    try {
+      return await api.uploadFile(file)
+     } catch (error) {
+       throw new Error(error)
+     }
+  }
   // 初始化
   async function init() {
     if (walletService.isNaboxInstalled()) {
@@ -115,6 +145,7 @@ export const useWalletStore = defineStore('wallet', () => {
           console.log('walletInfo:',{account,chainInfo})
           await checkNetwork()
           setupEventListeners()
+          setInterval(getBalance,5000)
         }
       } catch (err) {
         console.warn('钱包初始化失败:', err)
@@ -137,6 +168,10 @@ export const useWalletStore = defineStore('wallet', () => {
     checkNetwork,
     invokeView,
     contractCall,
-    currentChainConfig
+    currentChainConfig,
+    nulsBalance,
+    nulsUsdPrice,
+    uploadJson,
+    uploadFile
   }
 })

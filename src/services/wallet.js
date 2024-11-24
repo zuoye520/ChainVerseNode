@@ -1,4 +1,6 @@
 // NABOX Wallet Service for NULS Network
+import { sendRequest } from '../utils/httpUtils'
+import { CHAINS } from '../config'
 class WalletService {
   constructor() {
     this.nabox = window.nabox
@@ -174,12 +176,19 @@ class WalletService {
       if (!this.session) {
         this.session = await this.nabox.createSession()
       }
-
-      const balance = await this.session.getBalance()
-      return balance
+      // 构建 API 请求 URL
+      const url = `${CHAINS[this.chainId].rpc}/api/accountledger/balance/${this.session[0]}`;
+      const data = {
+        "assetChainId" : this.chainId,
+        "assetId" : 1
+      }
+      // 发送请求
+      const response = await sendRequest(url, { method: 'post',data:data });
+      if(!response.success) throw response
+      return response.data.total;
     } catch (error) {
       console.error('获取余额失败:', error)
-      return '0'
+      return 0
     }
   }
 

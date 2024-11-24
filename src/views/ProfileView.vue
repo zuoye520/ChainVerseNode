@@ -17,7 +17,7 @@
             </div>
           </div>
 
-          <div class="sidebar-nav">
+          <!-- <div class="sidebar-nav">
             <button 
               class="nav-item"
               :class="{ active: activeSection === 'profile' }"
@@ -32,7 +32,7 @@
             >
               OWNERSHIP
             </button>
-          </div>
+          </div> -->
         </div>
 
         <div class="profile-content">

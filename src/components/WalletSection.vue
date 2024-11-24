@@ -27,8 +27,8 @@
             <div class="wallet-details">
               <h3>{{ shortAddress }}</h3>
               <div class="wallet-balance">
-                <span class="balance-amount">{{ balance }} NULS</span>
-                <span class="balance-usd">≈ ${{ balanceUsd }}</span>
+                <span class="balance-amount">{{ $format.fromAmount(nulsBalance) }} NULS</span>
+                <span class="balance-usd">≈ {{ $format.formatUsd($format.fromAmount(nulsBalance) * nulsUsdPrice) }}</span>
               </div>
             </div>
           </div>
@@ -133,13 +133,13 @@ import { WalletIcon } from '@heroicons/vue/24/solid'
 
 const router = useRouter()
 const walletStore = useWalletStore()
-const { isConnected, shortAddress, error, isConnecting } = storeToRefs(walletStore)
+const { isConnected, shortAddress, error, isConnecting,nulsBalance,nulsUsdPrice } = storeToRefs(walletStore)
 
 const showWalletMenu = ref(false)
 const currentLanguage = ref('English')
 const walletAvatar = ref('https://nuls-cf.oss-us-west-1.aliyuncs.com/icon/NULS.png')
-const balance = ref('0.00')
-const balanceUsd = ref('0.00')
+// const balance = ref('0.00')
+// const balanceUsd = ref('0.00')
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)

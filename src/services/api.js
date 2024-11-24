@@ -1,11 +1,21 @@
 
 import { sendRequest } from '../utils/httpUtils'
+import { PinataSDK } from "pinata-web3";
 
-import { BINANCE_URL } from '../config'
-export const nulsUsd = async ()=>{
+import { BINANCE_URL,IPFS_CONFIG } from '../config'
+const pinata = new PinataSDK({
+  pinataJwt: IPFS_CONFIG.jwt,
+  pinataGateway: IPFS_CONFIG.gateway,
+});
+/**
+ * 币安获取币种平均价格
+ * @param {*} symbol 
+ * @returns 
+ */
+export const nulsUsd = async (symbol= 'NULSUSDT')=>{
   try {
     // 构建 API 请求 URL
-    const url = `${BINANCE_URL}/api/v3/avgPrice?symbol=NULSUSDT`;
+    const url = `${BINANCE_URL}/api/v3/avgPrice?symbol=${symbol}`;
     // 发送 GET 请求获取热门列表
     const response = await sendRequest(url, { method: 'get' });
     if(!response.price) throw response
@@ -15,4 +25,23 @@ export const nulsUsd = async ()=>{
     console.error('nulsUsd:', error);
     return 0;
   }
+}
+/**
+ * 上传json到ipfs
+ * @param {*} data 
+ * @returns 
+ */
+export const uploadJson = async (data)=>{
+  const upload = await pinata.upload.json(data)
+  return upload;
+}
+
+/**
+ * 上传文件到ipfs
+ * @param {*} file 
+ * @returns 
+ */
+export const uploadFile = async (file)=>{
+  const upload = await pinata.upload.file(file)
+  return upload;
 }
