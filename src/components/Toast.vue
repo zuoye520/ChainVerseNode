@@ -54,7 +54,7 @@ const toastIcon = computed(() => {
 <style scoped>
 .toast {
   position: fixed;
-  bottom: 2rem;
+  top: 5.5rem;
   left: 50%;
   transform: translateX(-50%);
   padding: 1rem 2rem;

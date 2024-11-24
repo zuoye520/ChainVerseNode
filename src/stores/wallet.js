@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { walletService } from '../services/wallet'
-import { CHAINS } from '../config'
+import * as api from '../services/api'
+import { CHAINS ,NABOX_DOWNLOAD_URL} from '../config'
 export const useWalletStore = defineStore('wallet', () => {
   const account = ref(null)
   const chainInfo = ref(null)
@@ -22,8 +23,8 @@ export const useWalletStore = defineStore('wallet', () => {
   async function connect() {
     if (!walletService.isNaboxInstalled()) {
       error.value = '请安装 NABOX 钱包'
-      window.open('https://nabox.io/download', '_blank')
-      return
+      window.open(NABOX_DOWNLOAD_URL, '_blank')
+      return;
     }
 
     try {
@@ -103,7 +104,7 @@ export const useWalletStore = defineStore('wallet', () => {
       throw new Error(error)
     }
   }
-  // 初始化钱包状态
+  // 初始化
   async function init() {
     if (walletService.isNaboxInstalled()) {
       try {

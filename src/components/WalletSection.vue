@@ -55,7 +55,6 @@
               </button>
             </router-link>
           </div>
-
           <div class="menu-section">
             <h4 class="section-title">Settings</h4>
             <button class="menu-item" @click="toggleLanguage">
@@ -113,10 +112,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref,inject, getCurrentInstance, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useWalletStore } from '../stores/wallet'
+const { proxy } = getCurrentInstance()
+const toast = inject('toast');
 import { 
   UserCircleIcon, 
   ArrowRightOnRectangleIcon,
@@ -169,13 +170,14 @@ function disconnectWallet() {
 
 function copyAddress() {
   if (walletStore.account) {
-    navigator.clipboard.writeText(walletStore.account)
+    proxy.$copy(walletStore.account)
+    toast.show('Copy success', 'success')
   }
 }
 
 function openExplorer() {
   if (walletStore.account) {
-    window.open(`https://nulscan.io/address/info?address=${walletStore.account}`, '_blank')
+    window.open(`${walletStore.currentChainConfig.explorer}/address/info?address=${walletStore.account}`, '_blank')
   }
 }
 

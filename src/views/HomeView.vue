@@ -75,6 +75,7 @@
     </div>
   </div>
     </Transition>
+   
   </div>
 </template>
 
@@ -87,17 +88,14 @@ const walletStore = useWalletStore()
 const { currentChainConfig, account } = storeToRefs(walletStore)
 // 获取全局配置
 const { proxy } = getCurrentInstance()
-const { CHAINS,CONFIG, CONSTANTS } = proxy.$config
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import Features from '../components/Features.vue'
-
 const loading = inject('loading');
 const toast = inject('toast');
 //Initialize data
 const searchQuery = ref('')
 const searchResults = ref([])
 const showModal = ref(false)
-
 onBeforeMount(() => {
   console.log('Component will be mounted')
   initializeData()

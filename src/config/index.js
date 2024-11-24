@@ -18,8 +18,8 @@ export const CHAINS = {
     name: 'NULS Testnet',
     symbol: 'NULS',
     decimals: 8,
-    rpc: 'https://testnet.api.nuls.io', 
-    explorer: 'https://testnet.nulscan.io',
+    rpc: 'https://beta.api.nuls.io', 
+    explorer: 'https://beta.nulscan.io',
     contracts: {
       domainAddress:'tNULSeBaN9B1GTocxwZhUpBjqdsrTeJNkksVZC',
       nrc721Address: 'tNULSeBaN2inyAkyfk7AW5uAUf6cQr4BGSZCCt',
@@ -34,7 +34,10 @@ export const IPFS_CONFIG = {
   gateway:"maroon-necessary-wallaby-5.mypinata.cloud",
   jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJiZTc5MzM4ZC1hYTJkLTRkYWYtYWIzZi0zMDBmYjg0NDlhMjUiLCJlbWFpbCI6Inp6ODc3MjAwNzcyQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6IkZSQTEifSx7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6Ik5ZQzEifV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI2MGRkM2Y4ZDk4NTYzODcwNmEyNiIsInNjb3BlZEtleVNlY3JldCI6ImU2YmVmMDFjODMyNzY0NDhhZDViYmVhOWIxNDRiNmQ2ODM1ZDA3NGUxYmFhYjQwZjZiM2ViNjZjNTA3NjMzNWYiLCJleHAiOjE3NjM5MDU1Mzl9.EwE2ATj18-USExEZ5Jb9cLAPSOo1yyh1xez1DcNJFAs"
 }
-
+//币安API URL
+export const BINANCE_URL ="https://api.binance.com"
+//NABOX下载链接
+export const NABOX_DOWNLOAD_URL ="https://nabox.io/download"
 // 当前环境配置
 // export const CURRENT_NETWORK = import.meta.env.VITE_APP_ENV === 'mainnet' 
 //   ? NETWORKS.MAINNET 

@@ -12,7 +12,7 @@
           </h3>
           <button v-if="!hideClose" class="close-btn" @click="handleClose">
             <XMarkIcon class="close-icon" />
-          </button>
+        </button>
         </div>
 
         <div class="modal-body">
