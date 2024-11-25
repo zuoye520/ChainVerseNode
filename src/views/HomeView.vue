@@ -135,6 +135,10 @@ const setupCircuitAnimation = () => {
 
 const searchDomain = async() => {
   // console.log('currentChainConfig:',currentChainConfig)
+  if(!account.value){
+    await walletStore.connect()
+    return;
+  }
   if (!searchQuery.value) {
     toast.show('Please enter your digital identity', 'warning')
     return;
