@@ -36,7 +36,7 @@ export const useWalletStore = defineStore('wallet', () => {
 
   async function connect() {
     if (!walletService.isNaboxInstalled()) {
-      error.value = '请安装 NABOX 钱包'
+      error.value = 'Please install NABOX wallet'
       window.open(NABOX_DOWNLOAD_URL, '_blank')
       return;
     }
@@ -59,8 +59,8 @@ export const useWalletStore = defineStore('wallet', () => {
       await checkNetwork()
 
     } catch (err) {
-      error.value = err.message || '连接钱包失败'
-      console.error('钱包连接失败:', err)
+      error.value = err.message || 'Failed to connect to wallet'
+      console.error('Failed to connect to wallet:', err)
       account.value = null
       chainInfo.value = null
     } finally {
@@ -94,7 +94,7 @@ export const useWalletStore = defineStore('wallet', () => {
         chainInfo.value = info
         await checkNetwork()
       } catch (err) {
-        console.error('链更新失败:', err)
+        console.error('Chain update failed:', err)
         disconnect()
       }
     })
@@ -105,7 +105,7 @@ export const useWalletStore = defineStore('wallet', () => {
     networkStatus.value = status
     
     if (!status.connected || status.error) {
-      error.value = status.error || '网络连接失败'
+      error.value = status.error || 'Network connection failed'
     }
   }
 
@@ -225,7 +225,7 @@ export const useWalletStore = defineStore('wallet', () => {
           setInterval(loadRewards,5000)
         }
       } catch (err) {
-        console.warn('钱包初始化失败:', err)
+        console.warn('Wallet initialization failed:', err)
         disconnect()
       }
     }

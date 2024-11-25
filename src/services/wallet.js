@@ -17,7 +17,7 @@ class WalletService {
   // 连接 NABOX 钱包
   async connect() {
     if (!this.isNaboxInstalled()) {
-      throw new Error('请先安装 NABOX 钱包')
+      throw new Error('Please install NABOX wallet first')
     }
 
     try {
@@ -25,14 +25,14 @@ class WalletService {
       this.session = await this.nabox.createSession()
       console.log('this.session:',this.session)
       if (!this.session || !this.session[0]) {
-        throw new Error('未找到账户')
+        throw new Error('Account not found')
       }
       this.chainId = this.session[0].indexOf('tNULS') >-1 ? 2:1 
 
       return this.session[0]
     } catch (error) {
-      console.error('连接 NABOX 失败:', error)
-      throw new Error(error.message || '连接钱包失败,请重试')
+      console.error('Failed to connect to NABOX:', error)
+      throw new Error(error.message || 'Failed to connect to wallet, please try again')
     }
   }
   
@@ -48,7 +48,7 @@ class WalletService {
       this.chainId = this.session[0].indexOf('tNULS') >-1 ? 2:1 
       return this.session[0]
     } catch (error) {
-      console.warn('获取 NABOX 账户失败:', error)
+      console.warn('Failed to obtain NABOX account:', error)
       return null
     }
   }
@@ -56,7 +56,7 @@ class WalletService {
   // 获取链信息
   async getChainInfo() {
     if (!this.isNaboxInstalled()) {
-      throw new Error('未检测到 NABOX 钱包')
+      throw new Error('NABOX wallet not detected')
     }
 
     try {
@@ -68,15 +68,15 @@ class WalletService {
         chainName: this.chainName
       }
     } catch (error) {
-      console.error('获取链信息失败:', error)
-      throw new Error('获取网络信息失败')
+      console.error('Failed to obtain chain information:', error)
+      throw new Error('Failed to obtain chain information')
     }
   }
 
   // 发送交易
   async sendTransaction(transaction) {
     if (!this.isNaboxInstalled()) {
-      throw new Error('请先安装 NABOX 钱包')
+      throw new Error('Please install NABOX wallet first')
     }
 
     try {
@@ -87,8 +87,8 @@ class WalletService {
       const txHash = await this.session.sendTransaction(transaction)
       return txHash
     } catch (error) {
-      console.error('发送交易失败:', error)
-      throw new Error(error.message || '交易失败,请重试')
+      console.error('Send transaction failed:', error)
+      throw new Error(error.message || 'Send transaction failed')
     }
   }
 
@@ -104,7 +104,7 @@ class WalletService {
             callback([])
           }
         } catch (error) {
-          console.error('账户变更处理失败:', error)
+          console.error('Account change processing failed:', error)
           callback([])
         }
       })
@@ -123,7 +123,7 @@ class WalletService {
           }
           callback(chainInfo)
         } catch (error) {
-          console.error('链变更处理失败:', error)
+          console.error('Chain change processing failed:', error)
         }
       })
     }
@@ -136,7 +136,7 @@ class WalletService {
         this.nabox.removeAllListeners()
         this.session = null
       } catch (error) {
-        console.warn('移除事件监听失败:', error)
+        console.warn('Failed to remove event listener:', error)
       }
     }
   }
@@ -144,7 +144,7 @@ class WalletService {
   // 检查网络连接状态
   async checkNetworkStatus() {
     if (!this.isNaboxInstalled()) {
-      return { connected: false, chainId: null, error: '未安装钱包' }
+      return { connected: false, chainId: null, error: 'No wallet installed' }
     }
 
     try {
@@ -187,7 +187,7 @@ class WalletService {
       if(!response.success) throw response
       return response.data.total;
     } catch (error) {
-      console.error('获取余额失败:', error)
+      console.error('Failed to obtain balance:', error)
       return 0
     }
   }

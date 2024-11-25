@@ -16,11 +16,11 @@
                 ref="fileInput" 
                 @change="handleFileSelect" 
                 accept="image/*"
-                style="visibility: hidden;"
+                class="hidden-input"
               >
-              <button class="camera-btn" @click="$refs.fileInput.click()">
+              <label class="camera-btn" @click.prevent="triggerFileInput">
                 <CameraIcon class="camera-icon" />
-              </button>
+              </label>
               <div class="avatar-glow"></div>
             </div>
             <button 
@@ -172,7 +172,7 @@ import { ref, inject, getCurrentInstance, onMounted, onBeforeMount, onUpdated, o
 import { useWalletStore } from '../stores/wallet'
 import { storeToRefs } from 'pinia'
 const walletStore = useWalletStore()
-const { account, currentChainConfig, primaryDomain,userUri } = storeToRefs(walletStore)
+const { account, currentChainConfig, primaryDomain, userUri } = storeToRefs(walletStore)
 const { proxy } = getCurrentInstance()
 import { CameraIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
 
@@ -231,14 +231,6 @@ const initializeData = () => {
 const loadUserProfile = async () => {
   if(!account.value) return;
   try {
-    // const result = await walletStore.invokeView({
-    //   contractAddress: currentChainConfig.value.contracts.domainAddress,
-    //   methodName: "userURI",
-    //   args: [primaryDomain.value]
-    // });
-    // console.log('userURI result:',result)
-    // result.result = 'bafkreifzznak7uchheuwkrxtdczlfer2wkkpqjf6oxt4lhcoikz47faisu'
-    
     if (userUri.value) {
       const {data:userProfile} = await walletStore.getFile(userUri.value)
       console.log('userProfile:',userProfile)
@@ -275,6 +267,12 @@ const handleImageError = () => {
   avatarUrl.value = DEFAULT_AVATAR
 }
 
+const triggerFileInput = () => {
+  if (fileInput.value) {
+    fileInput.value.click()
+  }
+}
+
 const handleFileSelect = (event) => {
   const file = event.target.files[0]
   if (!file) return
@@ -305,7 +303,7 @@ const saveAvatar = async () => {
     avatarUrl.value = `https://${proxy.$config.IPFS_CONFIG.gateway}/ipfs/${result.IpfsHash}`
     avatarUriHash.value = result.IpfsHash
     selectedFile.value = null
-    
+    await saveProfile()
     toast.show('Avatar updated successfully', 'success')
   } catch (error) {
     console.error('Failed to upload avatar:', error)
@@ -380,7 +378,6 @@ const saveProfile = async () => {
       description: description.value,
       location: location.value,
       socials: socials.value,
-      // websites: websites.value.filter(Boolean), // Remove empty websites
       websites: websites.value,
       avatarUriHash: avatarUriHash.value,
       avatarUrl: avatarUrl.value,
@@ -435,6 +432,33 @@ const saveProfile = async () => {
   width: 1.25rem;
   height: 1.25rem;
   margin-right: 0.5rem;
+}
+
+.hidden-input {
+  display: none;
+}
+
+.camera-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  z-index: 3;
+  padding: 0;
+}
+
+.camera-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--primary);
 }
 
 @keyframes spin {
