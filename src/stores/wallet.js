@@ -15,8 +15,9 @@ export const useWalletStore = defineStore('wallet', () => {
   const nulsUsdPrice = ref(0)
   // 域名列表数据
   const domains = ref([])
-  const primaryDomain = ref(null)
+  const primaryDomain = ref('')
   const userUri = ref('')
+
   // 奖励数据
   const totalRewards = ref('0')
   const totalRewardsUsd = ref('0')
@@ -28,6 +29,12 @@ export const useWalletStore = defineStore('wallet', () => {
     if (!account.value) return ''
     return `${account.value.slice(0, 6)}...${account.value.slice(-4)}`
   })
+  const primaryDomainOmit = computed(() => {
+    if (!primaryDomain.value) return ''
+    else if(primaryDomain.value.length > 20) return `${primaryDomain.value.slice(0, 4)}...${primaryDomain.value.slice(-8)}`
+    else return primaryDomain.value;
+    
+  })
   
   const currentChainConfig = computed(() => {
     if (!chainInfo.value) return ''
@@ -37,7 +44,7 @@ export const useWalletStore = defineStore('wallet', () => {
   async function connect() {
     if (!walletService.isNaboxInstalled()) {
       error.value = 'Please install NABOX wallet'
-      window.open(NABOX_DOWNLOAD_URL, '_blank')
+      // window.open(NABOX_DOWNLOAD_URL, '_blank')
       return;
     }
 
@@ -161,7 +168,7 @@ export const useWalletStore = defineStore('wallet', () => {
     let result = await invokeView(data)
     result = JSON.parse(result.result)
     console.log('result:',result)
-    
+    if(!result) return;
     const activeDomains = result.activeDomains.map(domain=>({
       name:domain,
       isPrimary:result.mainDomain === domain?true:false,
@@ -240,6 +247,7 @@ export const useWalletStore = defineStore('wallet', () => {
     isConnected,
     userUri,
     primaryDomain,
+    primaryDomainOmit,
     shortAddress,
     connect,
     disconnect,

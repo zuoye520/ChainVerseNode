@@ -14,7 +14,7 @@
     <div v-else>
       <button @click="toggleWalletMenu" class="wallet-btn" :class="{ 'active': showWalletMenu }">
         <WalletIcon class="wallet-icon" />
-        {{ primaryDomain || shortAddress }}
+        {{ primaryDomainOmit || shortAddress }}
         <ChevronDownIcon class="chevron-icon" :class="{ 'rotate': showWalletMenu }" />
       </button>
 
@@ -25,7 +25,7 @@
               <img :src="walletAvatar" alt="Wallet Avatar" />
             </div>
             <div class="wallet-details">
-              <h3>{{ primaryDomain || shortAddress }}</h3>
+              <h3>{{ primaryDomainOmit || shortAddress }}</h3>
               <div class="wallet-balance">
                 <span class="balance-amount">{{ $format.fromAmount(nulsBalance) }} NULS</span>
                 <span class="balance-usd">≈ {{ $format.formatUsd($format.fromAmount(nulsBalance) * nulsUsdPrice) }}</span>
@@ -55,36 +55,7 @@
               </button>
             </router-link>
           </div>
-          <!-- 
-          <div class="menu-section">
-            <h4 class="section-title">Settings</h4>
-            <button class="menu-item" @click="toggleLanguage">
-              <LanguageIcon class="menu-icon" />
-              <div class="menu-item-content">
-                <span class="menu-item-title">Language</span>
-                <span class="menu-item-description">{{ currentLanguage }}</span>
-              </div>
-            </button>
-          </div>
-        
-          <div class="menu-section">
-            <h4 class="section-title">Help & Support</h4>
-            <a href="https://docs.nuls.io" target="_blank" class="menu-item">
-              <BookOpenIcon class="menu-icon" />
-              <div class="menu-item-content">
-                <span class="menu-item-title">Documentation</span>
-                <span class="menu-item-description">Learn more about NULS AI</span>
-              </div>
-            </a>
-            <a href="https://discord.gg/nuls" target="_blank" class="menu-item">
-              <ChatBubbleLeftRightIcon class="menu-icon" />
-              <div class="menu-item-content">
-                <span class="menu-item-title">Community</span>
-                <span class="menu-item-description">Join our Discord server</span>
-              </div>
-            </a>
-          </div>
-        -->
+
           <div class="menu-section">
             <button class="menu-item disconnect" @click="disconnectWallet">
               <ArrowRightOnRectangleIcon class="menu-icon" />
@@ -104,42 +75,31 @@
         </div>
       </div>
     </div>
-
-    <!-- Error Toast -->
-    <div v-if="error" class="error-toast">
-      {{ error }}
-    </div>
   </div>
 </template>
 
 <script setup>
-import { ref,inject, getCurrentInstance, onMounted, onUnmounted } from 'vue'
+import { ref, inject, getCurrentInstance, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useWalletStore } from '../stores/wallet'
 const { proxy } = getCurrentInstance()
-const toast = inject('toast');
+const toast = inject('toast')
 import { 
   UserCircleIcon, 
   ArrowRightOnRectangleIcon,
   DocumentDuplicateIcon,
   ArrowTopRightOnSquareIcon,
-  ChevronDownIcon,
-  LanguageIcon,
-  BookOpenIcon,
-  ChatBubbleLeftRightIcon
+  ChevronDownIcon
 } from '@heroicons/vue/24/outline'
 import { WalletIcon } from '@heroicons/vue/24/solid'
 
 const router = useRouter()
 const walletStore = useWalletStore()
-const { isConnected, primaryDomain,shortAddress, error, isConnecting,nulsBalance,nulsUsdPrice } = storeToRefs(walletStore)
+const { isConnected, primaryDomainOmit, shortAddress, isConnecting, nulsBalance, nulsUsdPrice } = storeToRefs(walletStore)
 
 const showWalletMenu = ref(false)
-const currentLanguage = ref('English')
 const walletAvatar = ref('https://nuls-cf.oss-us-west-1.aliyuncs.com/icon/NULS.png')
-// const balance = ref('0.00')
-// const balanceUsd = ref('0.00')
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
@@ -185,10 +145,6 @@ function openExplorer() {
 function goToProfile(navigate) {
   showWalletMenu.value = false
   navigate()
-}
-
-function toggleLanguage() {
-  currentLanguage.value = currentLanguage.value === 'English' ? '中文' : 'English'
 }
 
 function handleClickOutside(event) {
@@ -497,20 +453,6 @@ function toggleWalletMenu() {
   box-shadow: 0 0 0 2px rgba(0, 228, 134, 0.2);
 }
 
-.error-toast {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(220, 53, 69, 0.9);
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease-out;
-}
-
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -519,17 +461,6 @@ function toggleWalletMenu() {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, 1rem);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
   }
 }
 

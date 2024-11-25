@@ -32,7 +32,7 @@
             </button>
             <div v-if="primaryDomain" class="primary-name">
               <h3>Primary Identity</h3>
-              <p>{{ primaryDomain }}</p>
+              <p>{{ primaryDomainOmit }}</p>
             </div>
           </div>
         </div>
@@ -172,7 +172,7 @@ import { ref, inject, getCurrentInstance, onMounted, onBeforeMount, onUpdated, o
 import { useWalletStore } from '../stores/wallet'
 import { storeToRefs } from 'pinia'
 const walletStore = useWalletStore()
-const { account, currentChainConfig, primaryDomain, userUri } = storeToRefs(walletStore)
+const { account, currentChainConfig, primaryDomain,primaryDomainOmit, userUri } = storeToRefs(walletStore)
 const { proxy } = getCurrentInstance()
 import { CameraIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
 
@@ -294,6 +294,10 @@ const handleFileSelect = (event) => {
 }
 
 const saveAvatar = async () => {
+  if (!primaryDomain.value){
+    toast.show('Please register AI identity first', 'warning')
+    return
+  }
   if (!selectedFile.value) return
 
   try {
@@ -365,11 +369,14 @@ const isValidUrl = (string) => {
 }
 
 const saveProfile = async () => {
+  if (!primaryDomain.value){
+    toast.show('Please register AI identity first', 'warning')
+    return
+  }
   if (!validateForm()) {
     toast.show('Please fix the validation errors', 'error')
     return
   }
-
   try {
     isSaving.value = true
     loading.show('Saving profile...')

@@ -189,6 +189,7 @@ const registerDomain = async(domain)=>{
     
   } catch (error) {
     console.error(error)
+    // toast.show(JSON.stringify(error), 'warning')
   }
   
 

@@ -4,18 +4,51 @@
     <router-view></router-view>
     <Toast />
     <Loading :show="isLoading" :text="loadingText" />
+    
+    <!-- Error Modal -->
+    <Modal
+      v-if="walletStore.error"
+      v-model:show="showErrorModal"
+      @close="closeErrorModal"
+      title="Connection Error"
+      size="small"
+    >
+      <div class="error-modal-content">
+        <ExclamationTriangleIcon class="error-icon" />
+        <p class="error-message">{{ walletStore.error }}</p>
+      </div>
+      
+      <template #footer>
+        <div class="modal-footer" v-if="error.value?.includes('install')">
+          <button class="cyber-button secondary" @click="closeErrorModal">
+            Cancel
+          </button>
+          <button class="cyber-button primary" @click="handleErrorAction">
+            Install Nabox
+          </button>
+        </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
-import { ref, provide } from 'vue'
+import { ref, getCurrentInstance,provide, watch } from 'vue'
 import Header from './components/Header.vue'
 import Loading from './components/Loading.vue'
 import Toast from './components/Toast.vue'
+import Modal from './components/Modal.vue'
+import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
+import { useWalletStore } from './stores/wallet'
+import { storeToRefs } from 'pinia'
 
+const walletStore = useWalletStore()
+const { error } = storeToRefs(walletStore)
+const { proxy } = getCurrentInstance()
 // Loading state
 const isLoading = ref(false)
 const loadingText = ref('Loading')
+const showErrorModal = ref(true)
 
 // Loading provider
 provide('loading', {
@@ -66,6 +99,26 @@ provide('toast', {
 
 // Provide toast state
 provide('toastState', toast)
+
+// Watch error changes
+watch(error, (newError) => {
+  if (newError) {
+    showErrorModal.value = true
+  }
+})
+
+// Error modal methods
+const closeErrorModal = () => {
+  showErrorModal.value = false
+  walletStore.$patch({ error: null })
+}
+
+const handleErrorAction = () => {
+  if (error.value?.includes('install')) {
+    window.open(proxy.$config.NABOX_DOWNLOAD_URL, '_blank')
+  }
+  closeErrorModal()
+}
 </script>
 
 <style>
@@ -91,6 +144,70 @@ body {
 
 .app {
   min-height: 100vh;
+}
+
+.error-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.error-icon {
+  width: 3rem;
+  height: 3rem;
+  color: #ff4d4d;
+}
+
+.error-message {
+  text-align: center;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.cyber-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cyber-button.secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+
+.cyber-button.primary {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.cyber-button:hover {
+  transform: translateY(-1px);
+}
+
+.cyber-button.secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+}
+
+.cyber-button.primary:hover {
+  background: var(--primary-dark);
 }
 
 ::-webkit-scrollbar {
