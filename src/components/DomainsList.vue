@@ -40,6 +40,7 @@
                 Set as primary
               </button>
               <button 
+                v-if="!domain.rewardsActive"
                 class="action-item"
                 :class="{ active: domain.rewardsActive }"
                 @click="toggleRewards(domain)"
@@ -184,7 +185,8 @@
   
   .tag.permanent {
     background: rgba(255, 255, 255, 0.05);
-    color: var(--text);
+    color: var(--primary);
+    border-color: rgba(0, 228, 134, 0.2);
   }
   
   .actions-menu {

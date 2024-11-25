@@ -8,7 +8,7 @@
           <div class="stat-content">
             <div class="stat-label">Total Rewards</div>
             <div class="stat-value">{{ totalRewards }} NULS</div>
-            <div class="stat-usd">≈ ${{ totalRewardsUsd }}</div>
+            <div class="stat-usd">≈ {{ totalRewardsUsd  }}</div>
           </div>
         </div>
   
@@ -19,7 +19,7 @@
           <div class="stat-content">
             <div class="stat-label">Unclaimed Rewards</div>
             <div class="stat-value">{{ unclaimedRewards }} NULS</div>
-            <div class="stat-usd">≈ ${{ unclaimedRewardsUsd }}</div>
+            <div class="stat-usd">≈ {{ unclaimedRewardsUsd }}</div>
           </div>
         </div>
   

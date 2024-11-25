@@ -90,7 +90,9 @@
     // Add NULS address validation logic here
     return recipientAddress.value.length > 0 && 
            (recipientAddress.value.startsWith('NULS') || 
-            recipientAddress.value.startsWith('tNULS'))
+            recipientAddress.value.startsWith('tNULS') ||
+            recipientAddress.value.endsWith('.nuls')) 
+            
   })
   
   watch(recipientAddress, () => {

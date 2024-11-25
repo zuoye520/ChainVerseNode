@@ -1,4 +1,29 @@
-/* Container Styles */
+
+.save-avatar-btn {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.save-avatar-btn:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.save-avatar-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 其他样式保持不变 */
 .profile {
   padding-top: 80px;
   min-height: 100vh;
@@ -17,7 +42,6 @@
   gap: 2rem;
 }
 
-/* Sidebar Styles */
 .profile-sidebar {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -62,15 +86,6 @@
   opacity: 0.5;
 }
 
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .camera-btn {
   position: absolute;
   bottom: 0;
@@ -110,37 +125,6 @@
   font-size: 0.9rem;
 }
 
-/* Navigation Styles */
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.nav-item {
-  padding: 1rem;
-  text-align: left;
-  background: none;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  color: var(--text);
-  transition: all 0.3s;
-  font-size: 0.9rem;
-}
-
-.nav-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
-}
-
-.nav-item.active {
-  background: var(--primary);
-  color: white;
-}
-
-/* Content Styles */
 .profile-content {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -238,9 +222,14 @@ textarea.cyber-input {
   transition: all 0.3s;
 }
 
-.cyber-button:hover {
+.cyber-button:hover:not(:disabled) {
   background: var(--primary-dark);
   transform: translateY(-1px);
+}
+
+.cyber-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .button-glitch {
@@ -268,7 +257,15 @@ textarea.cyber-input {
   }
 }
 
-/* Responsive Styles */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 768px) {
   .profile-grid {
     grid-template-columns: 1fr;

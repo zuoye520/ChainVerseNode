@@ -14,7 +14,7 @@
     <div v-else>
       <button @click="toggleWalletMenu" class="wallet-btn" :class="{ 'active': showWalletMenu }">
         <WalletIcon class="wallet-icon" />
-        {{ shortAddress }}
+        {{ primaryDomain || shortAddress }}
         <ChevronDownIcon class="chevron-icon" :class="{ 'rotate': showWalletMenu }" />
       </button>
 
@@ -25,7 +25,7 @@
               <img :src="walletAvatar" alt="Wallet Avatar" />
             </div>
             <div class="wallet-details">
-              <h3>{{ shortAddress }}</h3>
+              <h3>{{ primaryDomain || shortAddress }}</h3>
               <div class="wallet-balance">
                 <span class="balance-amount">{{ $format.fromAmount(nulsBalance) }} NULS</span>
                 <span class="balance-usd">≈ {{ $format.formatUsd($format.fromAmount(nulsBalance) * nulsUsdPrice) }}</span>
@@ -133,7 +133,7 @@ import { WalletIcon } from '@heroicons/vue/24/solid'
 
 const router = useRouter()
 const walletStore = useWalletStore()
-const { isConnected, shortAddress, error, isConnecting,nulsBalance,nulsUsdPrice } = storeToRefs(walletStore)
+const { isConnected, primaryDomain,shortAddress, error, isConnecting,nulsBalance,nulsUsdPrice } = storeToRefs(walletStore)
 
 const showWalletMenu = ref(false)
 const currentLanguage = ref('English')

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { walletService } from '../services/wallet'
 import * as api from '../services/api'
+import {fromAmount,formatUsd} from '../utils/format'
 
 import { CHAINS ,NABOX_DOWNLOAD_URL} from '../config'
 export const useWalletStore = defineStore('wallet', () => {
@@ -12,6 +13,14 @@ export const useWalletStore = defineStore('wallet', () => {
   const error = ref(null)
   const nulsBalance = ref(0)
   const nulsUsdPrice = ref(0)
+  // 域名列表数据
+  const domains = ref([])
+  const primaryDomain = ref(null)
+  // 奖励数据
+  const totalRewards = ref('0')
+  const totalRewardsUsd = ref('0')
+  const unclaimedRewards = ref('0')
+  const unclaimedRewardsUsd = ref('0')
 
   const isConnected = computed(() => !!account.value)
   const shortAddress = computed(() => {
@@ -134,6 +143,70 @@ export const useWalletStore = defineStore('wallet', () => {
        throw new Error(error)
      }
   }
+  async function getFile(hash) {
+    try {
+      return await api.getFile(hash)
+     } catch (error) {
+       throw new Error(error)
+     }
+  }
+  async function loadDomains() {
+    const data = {
+      contractAddress: currentChainConfig.value.contracts.domainAddress,
+      methodName: "userDomains",
+      methodDesc: "",
+      args: [account.value]
+    }
+    let result = await invokeView(data)
+    result = JSON.parse(result.result)
+    console.log('result:',result)
+    
+    const activeDomains = result.activeDomains.map(domain=>({
+      name:domain,
+      isPrimary:result.mainDomain === domain?true:false,
+      rewardsActive:true,
+      showActions: false
+    }))
+    const inactiveDomains = result.inactiveDomains.map(domain=>({
+      name:domain,
+      isPrimary:false,
+      rewardsActive:false,
+      showActions: false
+    }))
+    primaryDomain.value = result.mainDomain;
+    domains.value = [...activeDomains,...inactiveDomains] 
+    return domains;
+  }
+  async function loadRewards() {
+    try {
+      const data = {
+        contractAddress: currentChainConfig.value.contracts.domainAddress,
+        methodDesc: "",
+        args: [account.value]
+      }
+      const [received, pending] = await Promise.all([
+        invokeView({...data, methodName: "getUserRewardReceived"}),
+        invokeView({...data, methodName: "pendingAward"})
+      ])
+      console.log('[received, pending]',received.result, pending.result)
+      totalRewards.value = fromAmount(received.result)
+      unclaimedRewards.value =  fromAmount(pending.result)
+      // TODO: Add USD conversion
+      console.log(totalRewards.value,nulsUsdPrice.value)
+      totalRewardsUsd.value = formatUsd(totalRewards.value * nulsUsdPrice.value)
+      unclaimedRewardsUsd.value = formatUsd(unclaimedRewards.value * nulsUsdPrice.value)
+      return {
+        totalRewards,
+        unclaimedRewards,
+        totalRewardsUsd,
+        unclaimedRewardsUsd
+      }
+    } catch (error) {
+      console.error('Failed to load rewards:', error)
+      throw new Error(error)
+    } 
+  }
+  
   // 初始化
   async function init() {
     if (walletService.isNaboxInstalled()) {
@@ -146,6 +219,8 @@ export const useWalletStore = defineStore('wallet', () => {
           await checkNetwork()
           setupEventListeners()
           setInterval(getBalance,5000)
+          setInterval(loadDomains,5000)
+          setInterval(loadRewards,5000)
         }
       } catch (err) {
         console.warn('钱包初始化失败:', err)
@@ -161,6 +236,7 @@ export const useWalletStore = defineStore('wallet', () => {
     isConnecting,
     error,
     isConnected,
+    primaryDomain,
     shortAddress,
     connect,
     disconnect,
@@ -171,7 +247,15 @@ export const useWalletStore = defineStore('wallet', () => {
     currentChainConfig,
     nulsBalance,
     nulsUsdPrice,
+    domains,
+    loadDomains,
+    loadRewards,
+    totalRewards,
+    totalRewardsUsd,
+    unclaimedRewards,
+    unclaimedRewardsUsd,
     uploadJson,
-    uploadFile
+    uploadFile,
+    getFile
   }
 })

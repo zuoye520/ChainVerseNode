@@ -18,7 +18,9 @@ export const nulsUsd = async (symbol= 'NULSUSDT')=>{
     const url = `${BINANCE_URL}/api/v3/avgPrice?symbol=${symbol}`;
     // 发送 GET 请求获取热门列表
     const response = await sendRequest(url, { method: 'get' });
+    
     if(!response.price) throw response
+    console.log('nulsUsd:',response.price)
     return response.price;
   } catch (error) {
     // 捕获并记录任何发生的错误
@@ -44,4 +46,13 @@ export const uploadJson = async (data)=>{
 export const uploadFile = async (file)=>{
   const upload = await pinata.upload.file(file)
   return upload;
+}
+/**
+ * 上传文件到ipfs
+ * @param {*} file 
+ * @returns 
+ */
+export const getFile = async (hash)=>{
+  const data = await pinata.gateways.get(hash);
+  return data 
 }

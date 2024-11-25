@@ -173,7 +173,7 @@ const registerDomain = async(domain)=>{
         value: domain.price,
         contractAddress: currentChainConfig.value.contracts.domainAddress,
         methodName: "mint",
-        methodDesc: "(String domain)",
+        methodDesc: "",
         args: [domain.name],
         multyAssetValues: []
     }
