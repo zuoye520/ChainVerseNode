@@ -16,6 +16,7 @@ export const useWalletStore = defineStore('wallet', () => {
   // 域名列表数据
   const domains = ref([])
   const primaryDomain = ref(null)
+  const userUri = ref('')
   // 奖励数据
   const totalRewards = ref('0')
   const totalRewardsUsd = ref('0')
@@ -174,6 +175,7 @@ export const useWalletStore = defineStore('wallet', () => {
       showActions: false
     }))
     primaryDomain.value = result.mainDomain;
+    userUri.value = result.uri;
     domains.value = [...activeDomains,...inactiveDomains] 
     return domains;
   }
@@ -236,6 +238,7 @@ export const useWalletStore = defineStore('wallet', () => {
     isConnecting,
     error,
     isConnected,
+    userUri,
     primaryDomain,
     shortAddress,
     connect,

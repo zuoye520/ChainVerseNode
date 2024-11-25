@@ -5,15 +5,20 @@
         <div class="profile-sidebar">
           <div class="avatar-section">
             <div class="avatar">
-              <img :src="avatarUrl" alt="Profile" class="avatar-img">
+              <img 
+                :src="avatarUrl" 
+                alt="Profile" 
+                class="avatar-img"
+                @error="handleImageError"
+              >
               <input 
                 type="file" 
                 ref="fileInput" 
                 @change="handleFileSelect" 
                 accept="image/*"
-                style="display: none"
+                style="visibility: hidden;"
               >
-              <button class="camera-btn" @click="triggerFileInput">
+              <button class="camera-btn" @click="$refs.fileInput.click()">
                 <CameraIcon class="camera-icon" />
               </button>
               <div class="avatar-glow"></div>
@@ -40,11 +45,17 @@
             <div class="textarea-wrapper">
               <textarea 
                 v-model="description" 
-                placeholder="Tell us about yourself"
+                placeholder="Tell us about yourself (max 200 characters)"
                 maxlength="200"
                 class="cyber-input"
+                :class="{ 'error': validationErrors.description }"
               ></textarea>
-              <span class="character-count">{{ 200 - description.length }} characters remaining</span>
+              <span class="character-count" :class="{ 'error': description.length >= 200 }">
+                {{ 200 - description.length }} characters remaining
+              </span>
+              <span v-if="validationErrors.description" class="error-message">
+                {{ validationErrors.description }}
+              </span>
             </div>
           </div>
 
@@ -55,7 +66,12 @@
               v-model="location" 
               placeholder="New York, NY, USA"
               class="cyber-input"
+              :class="{ 'error': validationErrors.location }"
+              maxlength="100"
             >
+            <span v-if="validationErrors.location" class="error-message">
+              {{ validationErrors.location }}
+            </span>
           </div>
 
           <div class="form-section">
@@ -66,18 +82,26 @@
                 <input 
                   type="text" 
                   v-model="socials.twitter" 
-                  placeholder="Username"
+                  placeholder="Username without @"
                   class="cyber-input"
+                  :class="{ 'error': validationErrors['socials.twitter'] }"
                 >
+                <span v-if="validationErrors['socials.twitter']" class="error-message">
+                  {{ validationErrors['socials.twitter'] }}
+                </span>
               </div>
               <div class="social-input">
                 <label>Discord</label>
                 <input 
                   type="text" 
                   v-model="socials.discord" 
-                  placeholder="Username"
+                  placeholder="Username#0000"
                   class="cyber-input"
+                  :class="{ 'error': validationErrors['socials.discord'] }"
                 >
+                <span v-if="validationErrors['socials.discord']" class="error-message">
+                  {{ validationErrors['socials.discord'] }}
+                </span>
               </div>
               <div class="social-input">
                 <label>Farcaster</label>
@@ -86,7 +110,11 @@
                   v-model="socials.farcaster" 
                   placeholder="Username"
                   class="cyber-input"
+                  :class="{ 'error': validationErrors['socials.farcaster'] }"
                 >
+                <span v-if="validationErrors['socials.farcaster']" class="error-message">
+                  {{ validationErrors['socials.farcaster'] }}
+                </span>
               </div>
               <div class="social-input">
                 <label>Github</label>
@@ -95,7 +123,11 @@
                   v-model="socials.github" 
                   placeholder="Username"
                   class="cyber-input"
+                  :class="{ 'error': validationErrors['socials.github'] }"
                 >
+                <span v-if="validationErrors['socials.github']" class="error-message">
+                  {{ validationErrors['socials.github'] }}
+                </span>
               </div>
             </div>
           </div>
@@ -103,30 +135,27 @@
           <div class="form-section">
             <h2>Websites</h2>
             <div class="website-inputs">
-              <input 
-                type="url" 
-                v-model="websites[0]" 
-                placeholder="www.example.com"
-                class="cyber-input"
-              >
-              <input 
-                type="url" 
-                v-model="websites[1]" 
-                placeholder="www.myproject.com"
-                class="cyber-input"
-              >
-              <input 
-                type="url" 
-                v-model="websites[2]" 
-                placeholder="www.portfolio.com"
-                class="cyber-input"
-              >
+              <div v-for="(website, index) in websites" :key="index" class="website-input">
+                <input 
+                  type="url" 
+                  v-model="websites[index]" 
+                  :placeholder="'https://example.com'"
+                  class="cyber-input"
+                  :class="{ 'error': validationErrors[`websites.${index}`] }"
+                >
+                <span v-if="validationErrors[`websites.${index}`]" class="error-message">
+                  {{ validationErrors[`websites.${index}`] }}
+                </span>
+              </div>
             </div>
           </div>
 
           <div class="form-actions">
             <button class="cyber-button" @click="saveProfile" :disabled="isSaving">
-              <span v-if="isSaving">Saving...</span>
+              <span v-if="isSaving">
+                <ArrowPathIcon class="spin-icon" />
+                Saving...
+              </span>
               <span v-else>Save Changes</span>
               <div class="button-glitch"></div>
             </button>
@@ -139,36 +168,34 @@
 
 <script setup>
 import '../styles/ProfileView.css'
-import { ref, inject,getCurrentInstance, onMounted, onBeforeMount, onUpdated, onUnmounted } from 'vue'
+import { ref, inject, getCurrentInstance, onMounted, onBeforeMount, onUpdated, onUnmounted } from 'vue'
 import { useWalletStore } from '../stores/wallet'
 import { storeToRefs } from 'pinia'
 const walletStore = useWalletStore()
-const {account,currentChainConfig,primaryDomain} = storeToRefs(walletStore)
-// 获取全局配置
+const { account, currentChainConfig, primaryDomain,userUri } = storeToRefs(walletStore)
 const { proxy } = getCurrentInstance()
-import { CameraIcon } from '@heroicons/vue/24/outline'
+import { CameraIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
 
 const toast = inject('toast')
 const loading = inject('loading')
 
+const DEFAULT_AVATAR = 'https://nuls-cf.oss-us-west-1.aliyuncs.com/icon/NULS.png'
 const activeSection = ref('profile')
-const avatarUrl = ref('https://nuls-cf.oss-us-west-1.aliyuncs.com/icon/NULS.png')
+const avatarUrl = ref(DEFAULT_AVATAR)
 const avatarUriHash = ref('')
-const primaryName = ref('zz888888.nuls')
 const description = ref('')
 const location = ref('')
 const socials = ref({
   twitter: '',
-  discord:'',
+  discord: '',
   farcaster: '',
   github: ''
 })
 const websites = ref(['', '', ''])
-
-// 新增的状态
 const selectedFile = ref(null)
 const fileInput = ref(null)
 const isSaving = ref(false)
+const validationErrors = ref({})
 
 onBeforeMount(() => {
   initializeData()
@@ -192,7 +219,7 @@ const initializeData = () => {
     const profile = JSON.parse(savedProfile)
     description.value = profile.description || ''
     location.value = profile.location || ''
-    socials.value = profile.socials || { twitter: '', farcaster: '', github: '' }
+    socials.value = profile.socials || { twitter: '', discord: '', farcaster: '', github: '' }
     websites.value = profile.websites || ['', '', '']
     if (profile.avatarUrl) {
       avatarUrl.value = profile.avatarUrl
@@ -202,17 +229,34 @@ const initializeData = () => {
 }
 
 const loadUserProfile = async () => {
-   const result = await  walletStore.invokeView({
-      contractAddress: currentChainConfig.value.contracts.domainAddress,
-      methodName:"userURI",
-      methodDesc: "(String domain) return String",
-      args: []
-    });
-    console.log('userURI:',userURI)
-    //通过ipfs解析
-    const userProfile = await walletStore.getFile(result.result)
-  console.log('Loading user profile',userProfile)
-  //存储到本地
+  if(!account.value) return;
+  try {
+    // const result = await walletStore.invokeView({
+    //   contractAddress: currentChainConfig.value.contracts.domainAddress,
+    //   methodName: "userURI",
+    //   args: [primaryDomain.value]
+    // });
+    // console.log('userURI result:',result)
+    // result.result = 'bafkreifzznak7uchheuwkrxtdczlfer2wkkpqjf6oxt4lhcoikz47faisu'
+    
+    if (userUri.value) {
+      const {data:userProfile} = await walletStore.getFile(userUri.value)
+      console.log('userProfile:',userProfile)
+      if (userProfile) {
+        description.value = userProfile.description || ''
+        location.value = userProfile.location || ''
+        socials.value = userProfile.socials || { twitter: '', discord: '', farcaster: '', github: '' }
+        websites.value = userProfile.websites || ['', '', '']
+        if (userProfile.avatarUrl) {
+          avatarUrl.value = userProfile.avatarUrl
+          avatarUriHash.value = userProfile.avatarUriHash
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load profile:', error)
+    toast.show('Failed to load profile', 'error')
+  }
 }
 
 const saveProfileToLocalStorage = () => {
@@ -222,19 +266,18 @@ const saveProfileToLocalStorage = () => {
     socials: socials.value,
     websites: websites.value,
     avatarUrl: avatarUrl.value,
-    avatarUriHash:avatarUriHash.value
+    avatarUriHash: avatarUriHash.value
   }
   localStorage.setItem('userProfile', JSON.stringify(profile))
 }
 
-// 触发文件选择
-const triggerFileInput = () => {
-  fileInput.value.click()
+const handleImageError = () => {
+  avatarUrl.value = DEFAULT_AVATAR
 }
 
-// 处理文件选择
 const handleFileSelect = (event) => {
   const file = event.target.files[0]
+  if (!file) return
   
   // 验证文件类型
   if (!file.type.startsWith('image/')) {
@@ -252,30 +295,83 @@ const handleFileSelect = (event) => {
   avatarUrl.value = URL.createObjectURL(file)
 }
 
-// 保存头像
 const saveAvatar = async () => {
   if (!selectedFile.value) return
 
   try {
     loading.show('Uploading avatar...')
     const result = await walletStore.uploadFile(selectedFile.value)
-    console.log('uploadFile result:',result)
-    // 更新头像URL
-    avatarUrl.value = `https://${proxy.$config.IPFS_CONFIG.gateway}/ipfs/${result.IpfsHash}`;
-    avatarUriHash.value = result.IpfsHash;
-    selectedFile.value = null;
+    console.log('uploadFile result:', result)
+    avatarUrl.value = `https://${proxy.$config.IPFS_CONFIG.gateway}/ipfs/${result.IpfsHash}`
+    avatarUriHash.value = result.IpfsHash
+    selectedFile.value = null
     
     toast.show('Avatar updated successfully', 'success')
   } catch (error) {
     console.error('Failed to upload avatar:', error)
     toast.show('Failed to upload avatar', 'error')
+    avatarUrl.value = DEFAULT_AVATAR
   } finally {
     loading.hide()
   }
 }
 
-// 保存个人信息
+const validateForm = () => {
+  const errors = {}
+
+  // Description validation
+  if (description.value.length > 200) {
+    errors.description = 'Description must not exceed 200 characters'
+  }
+
+  // Location validation
+  if (location.value.length > 100) {
+    errors.location = 'Location must not exceed 100 characters'
+  }
+
+  // Social media validation
+  if (socials.value.twitter && !/^[A-Za-z0-9_]{1,15}$/.test(socials.value.twitter)) {
+    errors['socials.twitter'] = 'Invalid Twitter username'
+  }
+
+  if (socials.value.discord && !/^.{3,32}#[0-9]{4}$/.test(socials.value.discord)) {
+    errors['socials.discord'] = 'Invalid Discord username (format: username#0000)'
+  }
+
+  if (socials.value.github && !/^[A-Za-z0-9-]+$/.test(socials.value.github)) {
+    errors['socials.github'] = 'Invalid GitHub username'
+  }
+
+  if (socials.value.farcaster && !/^[A-Za-z0-9_]{1,32}$/.test(socials.value.farcaster)) {
+    errors['socials.farcaster'] = 'Invalid Farcaster username'
+  }
+
+  // Website validation
+  websites.value.forEach((website, index) => {
+    if (website && !isValidUrl(website)) {
+      errors[`websites.${index}`] = 'Invalid website URL'
+    }
+  })
+
+  validationErrors.value = errors
+  return Object.keys(errors).length === 0
+}
+
+const isValidUrl = (string) => {
+  try {
+    new URL(string)
+    return true
+  } catch (_) {
+    return false
+  }
+}
+
 const saveProfile = async () => {
+  if (!validateForm()) {
+    toast.show('Please fix the validation errors', 'error')
+    return
+  }
+
   try {
     isSaving.value = true
     loading.show('Saving profile...')
@@ -284,16 +380,15 @@ const saveProfile = async () => {
       description: description.value,
       location: location.value,
       socials: socials.value,
+      // websites: websites.value.filter(Boolean), // Remove empty websites
       websites: websites.value,
       avatarUriHash: avatarUriHash.value,
       avatarUrl: avatarUrl.value,
-      
     }
 
     const result = await walletStore.uploadJson(profileData)
-    console.log('uploadJson result:',result)
+    console.log('uploadJson result:', result)
 
-    //存储ipfs hash到UserURI
     const data = {
       from: account.value,
       value: 0,
@@ -302,7 +397,7 @@ const saveProfile = async () => {
       args: [result.IpfsHash]
     }
     const resUri = await walletStore.contractCall(data)
-    console.log('resUri:',resUri)
+    console.log('resUri:', resUri)
     saveProfileToLocalStorage()
     
     toast.show('Profile saved successfully', 'success')
@@ -316,3 +411,38 @@ const saveProfile = async () => {
 }
 </script>
 
+<style scoped>
+.error-message {
+  color: #ff4d4d;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.cyber-input.error {
+  border-color: #ff4d4d;
+}
+
+.character-count.error {
+  color: #ff4d4d;
+}
+
+.website-input {
+  margin-bottom: 1rem;
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
