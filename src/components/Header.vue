@@ -27,7 +27,7 @@
         </button>
         
         <!-- 社交菜单弹层 -->
-        <div v-if="showSocialMenu" class="social-menu" @click.stop>
+        <div v-show="showSocialMenu" class="social-menu" @click.stop>
           <div class="menu-section">
             <h4 class="section-title">Help & Support</h4>
             <a href="https://docs.nuls.io" target="_blank" class="menu-item">
@@ -41,14 +41,17 @@
           <div class="menu-section">
             <h4 class="section-title">Community</h4>
             <div class="social-buttons">
-              <a href="https://github.com/nuls-io" target="_blank" class="social-button" title="GitHub">
-                <img src="/github.svg" alt="GitHub" class="social-icon">
+              <a :href="proxy.$config.TG_URL" target="_blank" class="social-button" title="Telegram">
+                <img src="/telegram.svg" alt="Telegram" class="social-icon">
               </a>
-              <a href="https://discord.gg/nuls" target="_blank" class="social-button" title="Discord">
+              <a :href="proxy.$config.DC_URL" target="_blank" class="social-button" title="Discord">
                 <img src="/discord.svg" alt="Discord" class="social-icon">
               </a>
-              <a href="https://twitter.com/nuls" target="_blank" class="social-button" title="Twitter">
+              <a :href="proxy.$config.TW_URL" target="_blank" class="social-button" title="Twitter">
                 <img src="/twitter.svg" alt="Twitter" class="social-icon">
+              </a>
+              <a :href="proxy.$config.GITHUB_URL" target="_blank" class="social-button" title="GitHub">
+                <img src="/github.svg" alt="GitHub" class="social-icon">
               </a>
             </div>
           </div>
@@ -66,10 +69,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref,getCurrentInstance, onMounted, onUnmounted } from 'vue'
 import WalletSection from './WalletSection.vue'
 import { EllipsisHorizontalIcon, BookOpenIcon } from '@heroicons/vue/24/outline'
-
+const { proxy } = getCurrentInstance()
 const isMenuOpen = ref(false)
 const showSocialMenu = ref(false)
 
