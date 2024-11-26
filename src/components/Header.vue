@@ -19,6 +19,7 @@
       </router-link>
       <div class="nav-links" :class="{ 'active': isMenuOpen }">
         <router-link to="/my-domains" @click="closeMenu">My Identity</router-link>
+        <router-link to="/ai-training" @click="closeMenu">AI Training</router-link>
       </div>
       <div class="right-section">
         <!-- 社交菜单按钮 -->
@@ -42,7 +43,7 @@
             <h4 class="section-title">Community</h4>
             <div class="social-buttons">
               <a :href="proxy.$config.TG_URL" target="_blank" class="social-button" title="Telegram">
-                <img src="/telegram.svg" alt="Telegram" class="social-icon">
+                <img src="/telegram.svg" alt="Telegram" class="social-icon telegram-icon">
               </a>
               <a :href="proxy.$config.DC_URL" target="_blank" class="social-button" title="Discord">
                 <img src="/discord.svg" alt="Discord" class="social-icon">
@@ -288,7 +289,17 @@ onUnmounted(() => {
 .social-icon {
   width: 1.25rem;
   height: 1.25rem;
+  color: var(--text);
 }
+
+.telegram-icon {
+  filter: invert(0.7);
+}
+
+.social-button:hover .social-icon {
+  color: var(--primary);
+}
+
 
 /* 动画 */
 @keyframes slideDown {
