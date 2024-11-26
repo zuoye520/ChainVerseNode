@@ -15,11 +15,11 @@
     >
       <div class="error-modal-content">
         <ExclamationTriangleIcon class="error-icon" />
-        <p class="error-message">{{ walletStore.error }}</p>
+        <p class="error-message">{{ walletStore.error }}{{ error }}</p>
       </div>
       
-      <template #footer>
-        <div class="modal-footer" v-if="error.value?.includes('install')">
+      <template #footer v-if="error.indexOf('install') >-1">
+        <div class="modal-footer" >
           <button class="cyber-button secondary" @click="closeErrorModal">
             Cancel
           </button>

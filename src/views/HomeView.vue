@@ -147,22 +147,22 @@ const searchDomain = async() => {
   const data = {
       contractAddress: currentChainConfig.value.contracts.domainAddress,
       methodName: "getPriceByDomain",
-      methodDesc: "(String domain) return String[]",
+      methodDesc: "",
   }
-  console.log('data:',data)
   const searchList = [searchQuery.value+'.nuls',searchQuery.value+'1.nuls','my'+searchQuery.value+'.nuls'];
   const results = await Promise.all([
       walletStore.invokeView({...data,...{args: [searchList[0]]}}),
       walletStore.invokeView({...data,...{args: [searchList[1]]}}),
       walletStore.invokeView({...data,...{args: [searchList[2]]}})
     ]);
+    console.log('searchDomain:',results)
   const list = []
   results.forEach((item,index)=>{
     const result = JSON.parse(item.result)
     list.push({
       name:searchList[index],
       price:result[0],
-      registered:!result[1]
+      registered:result[1]==='true'
     })
   })
   searchResults.value = list;
@@ -174,7 +174,7 @@ const registerDomain = async(domain)=>{
     console.log('domain:',domain.name)
     const data = {
         from: account.value,
-        value: domain.price,
+        value: proxy.$format.fromAmount(domain.price),
         contractAddress: currentChainConfig.value.contracts.domainAddress,
         methodName: "mint",
         methodDesc: "",

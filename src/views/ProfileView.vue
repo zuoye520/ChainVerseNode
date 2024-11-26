@@ -179,7 +179,8 @@ import { CameraIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
 const toast = inject('toast')
 const loading = inject('loading')
 
-const DEFAULT_AVATAR = 'https://nuls-cf.oss-us-west-1.aliyuncs.com/icon/NULS.png'
+
+const DEFAULT_AVATAR = proxy.$config.DEFAULT_AVATAR
 const activeSection = ref('profile')
 const avatarUrl = ref(DEFAULT_AVATAR)
 const avatarUriHash = ref('')
@@ -230,24 +231,23 @@ const initializeData = () => {
 
 const loadUserProfile = async () => {
   if(!account.value) return;
+  const savedProfile = localStorage.getItem('userProfile')
+  if(savedProfile) return;
   try {
-    if (userUri.value) {
-      const {data:userProfile} = await walletStore.getFile(userUri.value)
-      console.log('userProfile:',userProfile)
-      if (userProfile) {
-        description.value = userProfile.description || ''
-        location.value = userProfile.location || ''
-        socials.value = userProfile.socials || { twitter: '', discord: '', farcaster: '', github: '' }
-        websites.value = userProfile.websites || ['', '', '']
-        if (userProfile.avatarUrl) {
-          avatarUrl.value = userProfile.avatarUrl
-          avatarUriHash.value = userProfile.avatarUriHash
-        }
+    const userProfile = await walletStore.loadUserProfile(userUri.value)
+    console.log('userProfile:',userProfile)
+    if (userProfile) {
+      description.value = userProfile.description || ''
+      location.value = userProfile.location || ''
+      socials.value = userProfile.socials || { twitter: '', discord: '', farcaster: '', github: '' }
+      websites.value = userProfile.websites || ['', '', '']
+      if (userProfile.avatarUrl) {
+        avatarUrl.value = userProfile.avatarUrl
+        avatarUriHash.value = userProfile.avatarUriHash
       }
     }
   } catch (error) {
     console.error('Failed to load profile:', error)
-    toast.show('Failed to load profile', 'error')
   }
 }
 
@@ -391,7 +391,7 @@ const saveProfile = async () => {
     }
 
     const result = await walletStore.uploadJson(profileData)
-    console.log('uploadJson result:', result)
+    console.log('upload Json result:', result)
 
     const data = {
       from: account.value,
@@ -401,7 +401,7 @@ const saveProfile = async () => {
       args: [result.IpfsHash]
     }
     const resUri = await walletStore.contractCall(data)
-    console.log('resUri:', resUri)
+    console.log(' setUserUri result:', resUri)
     saveProfileToLocalStorage()
     
     toast.show('Profile saved successfully', 'success')

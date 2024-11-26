@@ -27,6 +27,10 @@ export const CHAINS = {
     }
   }
 }
+// 当前环境配置
+export const CURRENT_NETWORK = import.meta.env.VITE_APP_ENV === 'mainnet' 
+  ? CHAINS[1]
+  : CHAINS[2]
 //https://app.pinata.cloud/ 配置
 export const IPFS_CONFIG = {
   apiKey: "60dd3f8d985638706a26",
@@ -38,8 +42,7 @@ export const IPFS_CONFIG = {
 export const BINANCE_URL ="https://api.binance.com"
 //NABOX下载链接
 export const NABOX_DOWNLOAD_URL ="https://nabox.io"
-// 当前环境配置
-// export const CURRENT_NETWORK = import.meta.env.VITE_APP_ENV === 'mainnet' 
-//   ? NETWORKS.MAINNET 
-//   : NETWORKS.TESTNET
+//默认头像
+export const DEFAULT_AVATAR = 'https://nuls-cf.oss-us-west-1.aliyuncs.com/icon/NULS.png'
+
 

@@ -18,7 +18,7 @@
         <ChevronDownIcon class="chevron-icon" :class="{ 'rotate': showWalletMenu }" />
       </button>
 
-      <div v-if="showWalletMenu" class="wallet-menu" @click.stop>
+      <div v-show="showWalletMenu" class="wallet-menu" @click.stop>
         <div class="wallet-menu-header">
           <div class="wallet-info">
             <div class="wallet-avatar">
@@ -97,9 +97,9 @@ import { WalletIcon } from '@heroicons/vue/24/solid'
 const router = useRouter()
 const walletStore = useWalletStore()
 const { isConnected, primaryDomainOmit, shortAddress, isConnecting, nulsBalance, nulsUsdPrice } = storeToRefs(walletStore)
-
+const DEFAULT_AVATAR = proxy.$config.DEFAULT_AVATAR
 const showWalletMenu = ref(false)
-const walletAvatar = ref('https://nuls-cf.oss-us-west-1.aliyuncs.com/icon/NULS.png')
+const walletAvatar = ref(DEFAULT_AVATAR)
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
@@ -113,7 +113,13 @@ onUnmounted(() => {
 
 function updateWalletAvatar() {
   if (isConnected.value) {
-    walletAvatar.value = `https://nuls-cf.oss-us-west-1.aliyuncs.com/icon/NULS.png`
+    const savedProfile = localStorage.getItem('userProfile')
+    if (savedProfile) {
+      const profile = JSON.parse(savedProfile)
+      if (profile.avatarUrl) {
+        walletAvatar.value = profile.avatarUrl
+      }
+    }
   }
 }
 
@@ -155,6 +161,7 @@ function handleClickOutside(event) {
 
 function toggleWalletMenu() {
   showWalletMenu.value = !showWalletMenu.value
+  updateWalletAvatar()
 }
 </script>
 

@@ -10,7 +10,6 @@
       </div>
 
       <!-- 有域名时显示 -->
-      <template v-if="domains.length">
         <RewardsStats
           :total-rewards="totalRewards"
           :total-rewards-usd="totalRewardsUsd"
@@ -18,7 +17,7 @@
           :unclaimed-rewards-usd="unclaimedRewardsUsd"
           @claim-rewards="claimAllRewards"
         />
-        
+      <template v-if="domains.length">  
         <DomainsList
           :domains="domains"
           @transfer="transferDomain"
@@ -52,7 +51,7 @@
 
 <script setup>
 import '../styles/MyDomainsView.css'
-import { ref, inject, onMounted } from 'vue'
+import { ref, inject,getCurrentInstance, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useWalletStore } from '../stores/wallet'
 import { PlusIcon, DocumentPlusIcon } from '@heroicons/vue/24/outline'
@@ -64,87 +63,22 @@ const walletStore = useWalletStore()
 const { currentChainConfig, account,nulsUsdPrice ,domains,totalRewards,totalRewardsUsd,unclaimedRewards,unclaimedRewardsUsd} = storeToRefs(walletStore)
 const loading = inject('loading')
 const toast = inject('toast')
-
-// 域名列表数据
-// const domains = ref([])
+// 获取全局配置
+const { proxy } = getCurrentInstance()
 const showTransferModal = ref(false)
 const selectedDomain = ref(null)
-
-// 奖励数据
-// const totalRewards = ref('0')
-// const totalRewardsUsd = ref('0')
-// const unclaimedRewards = ref('0')
-// const unclaimedRewardsUsd = ref('0')
 
 onMounted(async () => {
   if (account.value) {
     await walletStore.loadDomains()
     await walletStore.loadRewards()
+  }else{
+    setTimeout(()=>{
+      walletStore.loadDomains()
+      walletStore.loadRewards()
+    },3000)
   }
 })
-
-// 加载域名列表
-// const loadDomains = async () => {
-//   try {
-//     loading.show('Loading domains...')
-//     const data = {
-//       contractAddress: currentChainConfig.value.contracts.domainAddress,
-//       methodName: "userDomains",
-//       methodDesc: "",
-//       args: [account.value]
-//     }
-//     let result = await walletStore.invokeView(data)
-//     result = JSON.parse(result.result)
-//     console.log('result:',result)
-//     const activeDomains = result.activeDomains.map(domain=>({
-//       name:domain,
-//       isPrimary:result.mainDomain === domain?true:false,
-//       rewardsActive:true,
-//       showActions: false
-//     }))
-//     const inactiveDomains = result.inactiveDomains.map(domain=>({
-//       name:domain,
-//       isPrimary:false,
-//       rewardsActive:false,
-//       showActions: false
-//     }))
-    
-//     const list = [...activeDomains,...inactiveDomains] 
-
-//     domains.value = list.map(domain => ({
-//       ...domain,
-//       showActions: false
-//     }))
-//   } catch (error) {
-//     console.error('Failed to load domains:', error)
-//     toast.show('Failed to load domains', 'error')
-//   } finally {
-//     loading.hide()
-//   }
-// }
-
-// 加载奖励数据
-const loadRewards = async () => {
-  try {
-    const data = {
-      contractAddress: currentChainConfig.value.contracts.domainAddress,
-      methodDesc: "",
-      args: [account.value]
-    }
-    const [received, pending] = await Promise.all([
-      walletStore.invokeView({...data, methodName: "getUserRewardReceived"}),
-      walletStore.invokeView({...data, methodName: "pendingAward"})
-    ])
-    
-    totalRewards.value = received.result
-    unclaimedRewards.value =  pending.result
-    // TODO: Add USD conversion
-    totalRewardsUsd.value = (received.result * nulsUsdPrice.value).toString()
-    unclaimedRewardsUsd.value = (pending.result * nulsUsdPrice.value).toString()
-  } catch (error) {
-    console.error('Failed to load rewards:', error)
-  }
-}
 
 // 领取所有奖励
 const claimAllRewards = async () => {
@@ -252,9 +186,15 @@ const setPrimaryIdentity = async (domain) => {
 const toggleRewards = async (domain) => {
   try {
     loading.show(domain.rewardsActive ? 'Deactivating rewards...' : 'Activating rewards...')
+    //查询域名价格
+    const {result:price} = await walletStore.invokeView({
+        contractAddress: currentChainConfig.value.contracts.domainAddress,
+        methodName: "getPriceByDomain",
+        args: [domain.name]
+    })
     const data = {
       from: account.value,
-      value: 0,
+      value: proxy.$format.fromAmount(price[0]),
       contractAddress: currentChainConfig.value.contracts.domainAddress,
       methodName: "activeAward",
       methodDesc: "(String domain)",

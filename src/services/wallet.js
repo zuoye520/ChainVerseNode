@@ -1,11 +1,12 @@
 // NABOX Wallet Service for NULS Network
 import { sendRequest } from '../utils/httpUtils'
-import { CHAINS } from '../config'
+import { CHAINS,CURRENT_NETWORK } from '../config'
 class WalletService {
   constructor() {
+    this.NaboxWallet = window.NaboxWallet
     this.nabox = window.nabox
     this.session = null
-    this.chainId = null
+    this.chainId = CURRENT_NETWORK.chainId
     this.chainName = 'NULS'
   }
 
@@ -140,7 +141,18 @@ class WalletService {
       }
     }
   }
-
+// 切换指定网络 chainId = 1/2
+  async switchChain() {
+    if (!this.isNaboxInstalled()) {
+      return { connected: false, chainId: null, error: 'No wallet installed' }
+    }
+    try {
+      console.log('switchChain:',CURRENT_NETWORK.chainId)
+      await this.nabox.switchChain({chainId:CURRENT_NETWORK.chainId})
+    } catch (error) {
+      console.error(error)
+    }
+  }
   // 检查网络连接状态
   async checkNetworkStatus() {
     if (!this.isNaboxInstalled()) {
@@ -171,7 +183,6 @@ class WalletService {
     if (!this.isNaboxInstalled()) {
       return '0'
     }
-
     try {
       if (!this.session) {
         this.session = await this.nabox.createSession()
