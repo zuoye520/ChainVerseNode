@@ -31,13 +31,21 @@
         <div v-show="showSocialMenu" class="social-menu" @click.stop>
           <div class="menu-section">
             <h4 class="section-title">Help & Support</h4>
-            <a href="https://docs.nuls.io" target="_blank" class="menu-item">
+            <router-link to="/about" class="menu-item" @click="toggleSocialMenu">
+              <BookOpenIcon class="menu-icon" />
+              <div class="menu-item-content">
+                <span class="menu-item-title">About</span>
+                <span class="menu-item-description">Learn more about NULS AI</span>
+              </div>
+            </router-link>
+            
+            <!-- <a href="https://docs.nuls.io" target="_blank" class="menu-item">
               <BookOpenIcon class="menu-icon" />
               <div class="menu-item-content">
                 <span class="menu-item-title">Documentation</span>
                 <span class="menu-item-description">Learn more about NULS AI</span>
               </div>
-            </a>
+            </a> -->
           </div>
           <div class="menu-section">
             <h4 class="section-title">Community</h4>

@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import MyDomainsView from '../views/MyDomainsView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import AITrainingView from '../views/AITrainingView.vue'
+import AboutView from '../views/AboutView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/ai-training',
       name: 'ai-training',
       component: AITrainingView
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: AboutView
     }
   ]
 })
