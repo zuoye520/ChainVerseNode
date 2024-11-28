@@ -1,13 +1,13 @@
 <template>
     <Modal
       :show="show"
-      title="Transfer Name"
+      title="Transfer"
       size="small"
       @close="handleClose"
     >
       <div class="transfer-modal">
         <div class="domain-info">
-          <h4>Domain Name</h4>
+          <h4>AI Identity</h4>
           <div class="domain-name">{{ domain?.name }}</div>
         </div>
   
@@ -18,7 +18,7 @@
               v-model="recipientAddress"
               type="text"
               class="cyber-input"
-              placeholder="Enter NULS address"
+              placeholder="Enter AI Identity / NULS address"
               :class="{ 'error': showError }"
             />
             <div v-if="showError" class="error-message">
@@ -29,7 +29,7 @@
   
         <div class="warning-message">
           <ExclamationTriangleIcon class="warning-icon" />
-          <p>This action cannot be undone. The domain will be transferred permanently.</p>
+          <p>This action cannot be undone. The AI Identity will be transferred permanently.</p>
         </div>
       </div>
   

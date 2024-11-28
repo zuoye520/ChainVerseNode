@@ -29,7 +29,7 @@
             <div v-if="domain.showActions" class="actions-popup">
               <button class="action-item" @click="transferDomain(domain)">
                 <ArrowRightIcon class="action-icon" />
-                Transfer name
+                Transfer
               </button>
               <button 
                 v-if="!domain.isPrimary"

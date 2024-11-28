@@ -133,7 +133,7 @@ const handleTransfer = async ({ domain, recipient }) => {
       })
       console.log('userAddress:',userAddress)
       if(!userAddress.result) {
-        toast.show('The domain name does not exist', 'error')
+        toast.show('The AI Identity does not exist', 'error')
         return;
       }
       const [domaainAddress] = JSON.parse(userAddress.result)

@@ -1,7 +1,7 @@
 # NULS AI Smart Contract Documentation
 
 ## Overview
-The NULS AI smart contract system implements domain name registration, management, and staking functions on the NULS blockchain. It consists of three main contracts:
+The NULS AI smart contract system implements AI Identity registration, management, and staking functions on the NULS blockchain. It consists of three main contracts:
 
 1. NulsDomain - Core AI identity management contract
 
@@ -21,7 +21,7 @@ The NULS AI smart contract system implements domain name registration, managemen
 - `setTokenURI(BigInteger tokenId, string uri)` - Update AI identity metadata
 - `setUserURI(string uri)` - Set user profile metadata
 
-#####Domain name query
+#####AI Identity query
 - `domain(BigInteger tokenId)` - Get AI identity by token ID
 - `domainId(string domain)` - Get the token ID of the AI ​​identity
 - `tokenURI(string domain)` - Get AI Identity Metadata URI
@@ -87,7 +87,7 @@ The NULS AI smart contract system implements domain name registration, managemen
 
 ### Register AI identity
 ```javascript
-// Register a new domain name
+// Register a new AI Identity
 contract.mint("mydomain.nuls");
 
 // Register using metadata
@@ -130,7 +130,7 @@ const Rewards = contract.pendingAward(userAddress);
 - Properly verify caller permissions
 
 3. Input validation
-- Domain name format and length check
+- AI Identity format and length check
 - Amount verification for deposits/withdrawals
 - Address verification for transfers
 
