@@ -138,8 +138,11 @@ export const useWalletStore = defineStore('wallet', () => {
   }
   async function contractCall(data){
     try {
-     return await walletService.nabox.contractCall(data)
+     const result = await walletService.nabox.contractCall(data)
+     console.log('contractCall result:',error)
+     return result;
     } catch (error) {
+      console.error('contractCall error:',error)
       throw new Error(error)
     }
   }
