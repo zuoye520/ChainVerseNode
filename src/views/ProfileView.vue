@@ -215,7 +215,7 @@ onUnmounted(() => {
 })
 
 const initializeData = () => {
-  const savedProfile = localStorage.getItem('userProfile')
+  const savedProfile = localStorage.getItem(account)
   if (savedProfile) {
     const profile = JSON.parse(savedProfile)
     description.value = profile.description || ''
@@ -231,7 +231,7 @@ const initializeData = () => {
 
 const loadUserProfile = async () => {
   if(!account.value) return;
-  const savedProfile = localStorage.getItem('userProfile')
+  const savedProfile = localStorage.getItem(account)
   if(savedProfile) return;
   try {
     const userProfile = await walletStore.loadUserProfile(userUri.value)
@@ -260,7 +260,7 @@ const saveProfileToLocalStorage = () => {
     avatarUrl: avatarUrl.value,
     avatarUriHash: avatarUriHash.value
   }
-  localStorage.setItem('userProfile', JSON.stringify(profile))
+  localStorage.setItem(account, JSON.stringify(profile))
 }
 
 const handleImageError = () => {

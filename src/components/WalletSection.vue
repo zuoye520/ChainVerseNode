@@ -96,7 +96,7 @@ import { WalletIcon } from '@heroicons/vue/24/solid'
 
 const router = useRouter()
 const walletStore = useWalletStore()
-const { isConnected, primaryDomainOmit, shortAddress, isConnecting, nulsBalance, nulsUsdPrice } = storeToRefs(walletStore)
+const { account,isConnected, primaryDomainOmit, shortAddress, isConnecting, nulsBalance, nulsUsdPrice } = storeToRefs(walletStore)
 const DEFAULT_AVATAR = proxy.$config.DEFAULT_AVATAR
 const showWalletMenu = ref(false)
 const walletAvatar = ref(DEFAULT_AVATAR)
@@ -113,7 +113,7 @@ onUnmounted(() => {
 
 function updateWalletAvatar() {
   if (isConnected.value) {
-    const savedProfile = localStorage.getItem('userProfile')
+    const savedProfile = localStorage.getItem(account)
     if (savedProfile) {
       const profile = JSON.parse(savedProfile)
       if (profile.avatarUrl) {

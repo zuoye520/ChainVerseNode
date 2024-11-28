@@ -173,7 +173,8 @@ const setPrimaryIdentity = async (domain) => {
       methodDesc: "",
       args: [domain.name,accountPub.value],
     }
-    await walletStore.contractCall(data)
+    const resSetPrimaryIdentity = await walletStore.contractCall(data)
+    console.log('resSetPrimaryIdentity:',resSetPrimaryIdentity)
     toast.show('Primary identity updated', 'success')
     await walletStore.loadDomains()
   } catch (error) {

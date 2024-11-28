@@ -185,7 +185,7 @@ export const useWalletStore = defineStore('wallet', () => {
       }))
       const inactiveDomains = result.inactiveDomains.map(domain=>({
         name:domain,
-        isPrimary:false,
+        isPrimary:result.mainDomain === domain?true:false,
         rewardsActive:false,
         showActions: false
       }))
