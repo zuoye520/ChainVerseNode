@@ -21,9 +21,9 @@ export const CHAINS = {
     rpc: 'https://beta.api.nuls.io', 
     explorer: 'https://beta.nulscan.io',
     contracts: {
-      domainAddress:'tNULSeBaMzJJTvcfMZy8qHNrFahdkZ734t1qSe',
-      nrc721Address: 'tNULSeBaN6FwZmW9bPfq8oN9NGfjAQvVN38ACK',
-      stakeAddress:'tNULSeBaNAgmeAd39Vry3X7EvyLjCBxfSu4nVE'
+      domainAddress:'tNULSeBaN9wp9RHWy64xjyQVZvgHfyfNLuPf7y',
+      nrc721Address: 'tNULSeBaN43gGA2sSKEDJKSQPNhrsZCxgiZQXU',
+      stakeAddress:'tNULSeBaN8UyqmcZKcq5gA4RsNWhBviYUoYn27'
     }
   }
 }

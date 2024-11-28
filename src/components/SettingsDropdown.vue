@@ -111,8 +111,8 @@ onUnmounted(() => {
 .settings-btn:hover,
 .settings-btn.active {
   background: #f0f0f0;
-  color: #00e486;
-  border-color: #00e486;
+  color: #00e789;
+  border-color: #00e789;
   transform: translateY(-1px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -159,7 +159,7 @@ onUnmounted(() => {
 .section-icon {
   width: 1.25rem;
   height: 1.25rem;
-  color: #00e486;
+  color: #00e789;
 }
 
 .select-input {
@@ -175,12 +175,12 @@ onUnmounted(() => {
 }
 
 .select-input:hover {
-  border-color: #00e486;
+  border-color: #00e789;
 }
 
 .select-input:focus {
   outline: none;
-  border-color: #00e486;
+  border-color: #00e789;
   box-shadow: 0 0 0 2px rgba(0, 228, 134, 0.1);
 }
 
@@ -204,7 +204,7 @@ onUnmounted(() => {
 
 .social-link:hover {
   background: #f8f9fa;
-  color: #00e486;
+  color: #00e789;
   border-color: #eee;
   transform: translate(2px);
 }
@@ -230,7 +230,7 @@ onUnmounted(() => {
 }
 
 .menu-link:hover {
-  color: #00e486;
+  color: #00e789;
   background: #f8f9fa;
 }
 
@@ -252,7 +252,7 @@ onUnmounted(() => {
 .status-dot {
   width: 8px;
   height: 8px;
-  background: #00e486;
+  background: #00e789;
   border-radius: 50%;
   box-shadow: 0 0 0 2px rgba(0, 228, 134, 0.2);
 }

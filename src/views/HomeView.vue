@@ -85,7 +85,7 @@ import { ref, inject, getCurrentInstance, onMounted, onUnmounted, onBeforeMount,
 import { storeToRefs } from 'pinia'
 import { useWalletStore } from '../stores/wallet'
 const walletStore = useWalletStore()
-const { currentChainConfig, account } = storeToRefs(walletStore)
+const { currentChainConfig, account,accountPub } = storeToRefs(walletStore)
 // 获取全局配置
 const { proxy } = getCurrentInstance()
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
@@ -178,7 +178,7 @@ const registerDomain = async(domain)=>{
         contractAddress: currentChainConfig.value.contracts.domainAddress,
         methodName: "mint",
         methodDesc: "",
-        args: [domain.name],
+        args: [domain.name,accountPub.value],
         multyAssetValues: []
     }
     console.log('data:',data)

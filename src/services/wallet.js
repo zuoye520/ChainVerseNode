@@ -53,7 +53,17 @@ class WalletService {
       return null
     }
   }
-  
+  async getPub(accountAddress){
+    try {
+      const accountPub = await nabox.getPub({address:accountAddress});
+      console.log('accountPub:',accountPub);
+      return accountPub;
+    } catch (error) {
+      console.error('Failed to obtain public key:', error)
+      return null
+    }
+    
+  }
   // 获取链信息
   async getChainInfo() {
     if (!this.isNaboxInstalled()) {

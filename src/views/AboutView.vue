@@ -47,6 +47,8 @@
 </template>
 
 <script setup>
+import { getCurrentInstance } from 'vue'
+const { proxy } = getCurrentInstance()
 import { 
   SparklesIcon, 
   UserCircleIcon,
@@ -58,14 +60,19 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const faqs = [
+  // {
+  //   question: "What is NULS AI Digital Identity?",
+  //   answer: "NULS AI digital identity allows you to earn rewards while owning your digital identity. You can transfer assets and value through digital identity in the NULS ecosystem, and enjoy the benefits of AI training evolution in the future.",
+  //   icon: UserCircleIcon
+  // },
   {
-    question: "What is NULS AI Digital Identity?",
-    answer: "NULS AI digital identity allows you to earn rewards while owning your digital identity. You can transfer assets and value through digital identity in the NULS ecosystem, and enjoy the benefits of AI training evolution in the future.",
-    icon: UserCircleIcon
+    question: "How much does NULS AI Digital Identity registration cost?",
+    answer: "AI digital identity pricing is based on name length - different lengths have different prices. Once registered, it can be used permanently with no time limit.",
+    icon: CurrencyDollarIcon
   },
   {
-    question: "How much does AI Digital Identity registration cost?",
-    answer: "AI digital identity pricing is based on name length - different lengths have different prices. Once registered, it can be used permanently with no time limit.",
+    question: "Where does NULS AI's passive income come from?",
+    answer: "90% of the NULS AI digital identity registration fee will be pledged to the NULS node and locked permanently.",
     icon: CurrencyDollarIcon
   },
   {
@@ -87,7 +94,7 @@ const faqs = [
     question: "I'm a developer. How do I integrate NULS AI Digital Identity into my application?",
     answer: "If you're a developer looking to integrate NULS AI into your application, the documentation is the easiest way to get started.",
     icon: CodeBracketIcon,
-    link: "https://docs.nuls.io",
+    link: proxy.$config.GITHUB_URL,
     linkText: "View Documentation"
   }
 ]

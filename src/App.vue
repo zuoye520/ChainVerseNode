@@ -123,7 +123,7 @@ const handleErrorAction = () => {
 
 <style>
 :root {
-  --primary: #00e486;
+  --primary: #00e789;
   --primary-dark: #00cc76;
   --bg-dark: #0a0b0e;
   --text: rgba(255, 255, 255, 0.7);

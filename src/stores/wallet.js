@@ -8,6 +8,7 @@ import { CHAINS ,NABOX_DOWNLOAD_URL} from '../config'
 export const useWalletStore = defineStore('wallet', () => {
   const intervalId = ref(null)
   const account = ref(null)
+  const accountPub = ref(null)
   const chainInfo = ref(null)
   const networkStatus = ref({ connected: false, chainId: null, error: null })
   const isConnecting = ref(false)
@@ -48,21 +49,17 @@ export const useWalletStore = defineStore('wallet', () => {
       // window.open(NABOX_DOWNLOAD_URL, '_blank')
       return;
     }
-
     try {
       isConnecting.value = true
       error.value = null
-      
-      const address = await walletService.connect()
-      account.value = address
-      
-      const info = await walletService.getChainInfo()
-      console.log('getChainInfo:',info)
-      chainInfo.value = info
-      console.log('walletInfo:',{account,chainInfo})
+      account.value = await walletService.connect();
+      console.log('account address:',account.value)
+      accountPub.value = await walletService.getPub(account.value);
+      console.log('account Pub:',accountPub.value)
+      chainInfo.value = await walletService.getChainInfo()
+      console.log('getChainInfo:',chainInfo.value)
       // 设置监听器
       setupEventListeners()
-      
       // 检查网络状态
       await checkNetwork()
 
@@ -124,6 +121,13 @@ export const useWalletStore = defineStore('wallet', () => {
     networkStatus.value = { connected: false, chainId: null, error: null }
     clearInterval(intervalId.value);
     walletService.disconnect()
+  }
+  async function getPub(accountAddress){
+    try {
+     return await walletService.getPub(accountAddress || account.value)
+    } catch (error) {
+      throw new Error(error)
+    }
   }
   async function invokeView(data){
     try {
@@ -264,8 +268,9 @@ export const useWalletStore = defineStore('wallet', () => {
         const currentAccount = await walletService.getAccount()
         if (currentAccount) {
           account.value = currentAccount;
-          chainInfo.value = await walletService.getChainInfo()
-          console.log('walletInfo:',{...chainInfo.value,...{currentAccount:account.value}})
+          accountPub.value = await walletService.getPub(currentAccount);
+          chainInfo.value = await walletService.getChainInfo();
+          console.log('walletInfo:',{...chainInfo.value,...{currentAccount:account.value,accountPub:accountPub.value}});
           await checkNetwork()
           setupEventListeners()
           //定时拉取数据,退出钱包需要清除定时任务
@@ -289,6 +294,7 @@ export const useWalletStore = defineStore('wallet', () => {
 
   return {
     account,
+    accountPub,
     chainInfo,
     networkStatus,
     isConnecting,
@@ -298,6 +304,7 @@ export const useWalletStore = defineStore('wallet', () => {
     primaryDomain,
     primaryDomainOmit,
     shortAddress,
+    getPub,
     connect,
     disconnect,
     init,

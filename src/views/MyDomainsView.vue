@@ -60,7 +60,7 @@ import DomainsList from '../components/DomainsList.vue'
 import TransferModal from '../components/TransferModal.vue'
 
 const walletStore = useWalletStore()
-const { currentChainConfig, account,nulsUsdPrice ,domains,totalRewards,totalRewardsUsd,unclaimedRewards,unclaimedRewardsUsd} = storeToRefs(walletStore)
+const { currentChainConfig, account,accountPub,domains,totalRewards,totalRewardsUsd,unclaimedRewards,unclaimedRewardsUsd} = storeToRefs(walletStore)
 const loading = inject('loading')
 const toast = inject('toast')
 // 获取全局配置
@@ -131,11 +131,13 @@ const handleTransfer = async ({ domain, recipient }) => {
         methodName: "userAddress",
         args: [recipient]
       })
+      console.log('userAddress:',userAddress)
       if(!userAddress.result) {
         toast.show('The domain name does not exist', 'error')
         return;
       }
-      recipientAddress = userAddress.result;
+      const [domaainAddress] = JSON.parse(userAddress.result)
+      recipientAddress = domaainAddress;
     }
 
     const from = account.value
@@ -169,7 +171,7 @@ const setPrimaryIdentity = async (domain) => {
       contractAddress: currentChainConfig.value.contracts.domainAddress,
       methodName: "changeMainDomain",
       methodDesc: "",
-      args: [domain.name],
+      args: [domain.name,accountPub.value],
     }
     await walletStore.contractCall(data)
     toast.show('Primary identity updated', 'success')
@@ -192,14 +194,17 @@ const toggleRewards = async (domain) => {
         methodName: "getPriceByDomain",
         args: [domain.name]
     })
+    console.log('domain price:',price)
+    const [domainPrice] = JSON.parse(price);
     const data = {
       from: account.value,
-      value: proxy.$format.fromAmount(price[0]),
+      value: proxy.$format.fromAmount(domainPrice),
       contractAddress: currentChainConfig.value.contracts.domainAddress,
       methodName: "activeAward",
-      methodDesc: "(String domain)",
-      args: [domain.name],
+      methodDesc: "",
+      args: [domain.name,accountPub.value],
     }
+    console.log('activeAward:',data)
     await walletStore.contractCall(data)
     toast.show(`Rewards ${domain.rewardsActive ? 'deactivated' : 'activated'} successfully`, 'success')
     await walletStore.loadDomains()
