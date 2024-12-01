@@ -479,8 +479,7 @@ function toggleWalletMenu() {
 
   .wallet-menu {
     position: fixed;
-    top: auto;
-    bottom: 0;
+    top: 100%;
     left: 0;
     right: 0;
     width: 100%;

@@ -127,12 +127,22 @@ const handleErrorAction = () => {
   --primary-dark: #00cc76;
   --bg-dark: #0a0b0e;
   --text: rgba(255, 255, 255, 0.7);
+  --header-height: 70px;
+  --container-padding: clamp(1rem, 5vw, 2rem);
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-size: 16px;
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 }
 
 body {
@@ -140,10 +150,14 @@ body {
   background: var(--bg-dark);
   color: var(--text);
   line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
 .app {
   min-height: 100vh;
+  padding-top: var(--header-height);
 }
 
 .error-modal-content {
@@ -183,6 +197,8 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  touch-action: manipulation;
 }
 
 .cyber-button.secondary {
@@ -225,5 +241,41 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-dark);
+}
+
+@media (max-width: 768px) {
+  .modal-footer {
+    flex-direction: column;
+  }
+
+  .cyber-button {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .error-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .error-message {
+    font-size: 0.9rem;
+  }
+}
+
+/* Fix for iOS Safari 100vh issue */
+@supports (-webkit-touch-callout: none) {
+  .app {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Add active state for touch devices */
+@media (hover: none) {
+  .cyber-button:active {
+    transform: translateY(1px);
+    opacity: 0.8;
+  }
 }
 </style>

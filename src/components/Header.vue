@@ -22,12 +22,10 @@
         <router-link to="/ai-training" @click="closeMenu">AI Training</router-link>
       </div>
       <div class="right-section">
-        <!-- 社交菜单按钮 -->
         <button class="menu-dots-btn" @click="toggleSocialMenu">
           <EllipsisHorizontalIcon class="dots-icon" />
         </button>
         
-        <!-- 社交菜单弹层 -->
         <div v-show="showSocialMenu" class="social-menu" @click.stop>
           <div class="menu-section">
             <h4 class="section-title">Help & Support</h4>
@@ -38,14 +36,6 @@
                 <span class="menu-item-description">Learn more about NULS AI</span>
               </div>
             </router-link>
-            
-            <!-- <a href="https://docs.nuls.io" target="_blank" class="menu-item">
-              <BookOpenIcon class="menu-icon" />
-              <div class="menu-item-content">
-                <span class="menu-item-title">Documentation</span>
-                <span class="menu-item-description">Learn more about NULS AI</span>
-              </div>
-            </a> -->
           </div>
           <div class="menu-section">
             <h4 class="section-title">Community</h4>
@@ -78,19 +68,26 @@
 </template>
 
 <script setup>
-import { ref,getCurrentInstance, onMounted, onUnmounted } from 'vue'
+import { ref, getCurrentInstance, onMounted, onUnmounted } from 'vue'
 import WalletSection from './WalletSection.vue'
 import { EllipsisHorizontalIcon, BookOpenIcon } from '@heroicons/vue/24/outline'
+
 const { proxy } = getCurrentInstance()
 const isMenuOpen = ref(false)
 const showSocialMenu = ref(false)
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
+  if (isMenuOpen.value) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
+  }
 }
 
 const closeMenu = () => {
   isMenuOpen.value = false
+  document.body.style.overflow = ''
 }
 
 const toggleSocialMenu = (event) => {
@@ -110,36 +107,40 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+  document.body.style.overflow = ''
 })
 </script>
 
 <style scoped>
-/* 基础样式 */
 .header {
   background: rgba(10, 11, 14, 0.8);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: fixed;
   width: 100%;
   top: 0;
   z-index: 100;
+  height: var(--header-height);
 }
 
 .nav-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: 0 var(--container-padding);
+  height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* Logo 样式 */
 .logo {
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  position: relative;
+  z-index: 101;
 }
 
 .logo-wrapper {
@@ -152,7 +153,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 0.75rem;
   font-weight: 800;
-  font-size: 1.5rem;
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
   position: relative;
 }
 
@@ -165,7 +166,120 @@ onUnmounted(() => {
   position: relative;
 }
 
-/* 社交菜单样式 */
+.ai-container {
+  position: relative;
+  height: 2rem;
+  width: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai {
+  color: var(--primary);
+  font-size: 0.9em;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 0 10px rgba(0, 228, 134, 0.5);
+  animation: pulse 2s infinite;
+}
+
+.ai-effects {
+  position: absolute;
+  inset: -0.25rem;
+  pointer-events: none;
+}
+
+.circuit-lines {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  opacity: 0.5;
+  background: 
+    linear-gradient(90deg, transparent 50%, var(--primary) 50%) -2px 0/4px 1px repeat-x,
+    linear-gradient(90deg, transparent 50%, var(--primary) 50%) -2px 100%/4px 1px repeat-x;
+  animation: circuit-animate 20s linear infinite;
+}
+
+.pulse {
+  position: absolute;
+  inset: -0.5rem;
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  animation: pulse-animate 2s infinite;
+}
+
+.glow {
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  filter: blur(20px);
+  opacity: 0.2;
+  border-radius: 4px;
+  animation: glow-animate 2s infinite;
+}
+
+.logo-underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent,
+    var(--primary),
+    transparent
+  );
+  opacity: 0.5;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 500;
+  transition: all 0.2s;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  position: relative;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.nav-links a:hover,
+.nav-links a.router-link-active {
+  color: white;
+}
+
+.nav-links a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  border-radius: 8px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s;
+}
+
+.nav-links a:hover::before,
+.nav-links a.router-link-active::before {
+  opacity: 0.1;
+  transform: scale(1);
+}
+
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  z-index: 101;
+}
+
 .menu-dots-btn {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -176,7 +290,6 @@ onUnmounted(() => {
   justify-content: center;
   border-radius: 8px;
   transition: all 0.3s;
-  margin-right: 0.5rem;
 }
 
 .menu-dots-btn:hover {
@@ -197,6 +310,7 @@ onUnmounted(() => {
   margin-top: 0.5rem;
   background: rgba(10, 11, 14, 0.95);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   width: 280px;
@@ -308,133 +422,6 @@ onUnmounted(() => {
   color: var(--primary);
 }
 
-
-/* 动画 */
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* 其他样式保持不变 */
-.ai-container {
-  position: relative;
-  height: 2rem;
-  width: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ai {
-  color: var(--primary);
-  font-size: 0.9em;
-  position: relative;
-  z-index: 2;
-  text-shadow: 0 0 10px rgba(0, 228, 134, 0.5);
-  animation: pulse 2s infinite;
-}
-
-.ai-effects {
-  position: absolute;
-  inset: -0.25rem;
-  pointer-events: none;
-}
-
-.circuit-lines {
-  position: absolute;
-  inset: 0;
-  border: 1px solid var(--primary);
-  border-radius: 4px;
-  opacity: 0.5;
-  background: 
-    linear-gradient(90deg, transparent 50%, var(--primary) 50%) -2px 0/4px 1px repeat-x,
-    linear-gradient(90deg, transparent 50%, var(--primary) 50%) -2px 100%/4px 1px repeat-x;
-  animation: circuit-animate 20s linear infinite;
-}
-
-.pulse {
-  position: absolute;
-  inset: -0.5rem;
-  border: 1px solid var(--primary);
-  border-radius: 4px;
-  animation: pulse-animate 2s infinite;
-}
-
-.glow {
-  position: absolute;
-  inset: 0;
-  background: var(--primary);
-  filter: blur(20px);
-  opacity: 0.2;
-  border-radius: 4px;
-  animation: glow-animate 2s infinite;
-}
-
-.logo-underline {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, 
-    transparent,
-    var(--primary),
-    transparent
-  );
-  opacity: 0.5;
-}
-
-.nav-links {
-  display: flex;
-  gap: 2rem;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: var(--text);
-  font-weight: 500;
-  transition: all 0.2s;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  position: relative;
-}
-
-.nav-links a:hover,
-.nav-links a.router-link-active {
-  color: white;
-}
-
-.nav-links a::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--primary);
-  border-radius: 8px;
-  opacity: 0;
-  transform: scale(0.8);
-  transition: all 0.2s;
-}
-
-.nav-links a:hover::before,
-.nav-links a.router-link-active::before {
-  opacity: 0.1;
-  transform: scale(1);
-}
-
-.right-section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  position: relative;
-  z-index: 100;
-}
-
 .menu-btn {
   display: none;
   flex-direction: column;
@@ -445,6 +432,8 @@ onUnmounted(() => {
   border: none;
   cursor: pointer;
   padding: 0;
+  position: relative;
+  z-index: 102;
 }
 
 .menu-btn span {
@@ -510,24 +499,37 @@ onUnmounted(() => {
   }
 }
 
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 768px) {
   .nav-container {
-    padding: 1rem;
+    padding: 0 1rem;
   }
 
   .nav-links {
     display: none;
     position: fixed;
-    top: 70px;
+    top: var(--header-height);
     left: 0;
     right: 0;
     background: rgba(10, 11, 14, 0.95);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     padding: 1rem;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    height: calc(100vh - var(--header-height));
   }
 
   .nav-links.active {
@@ -538,6 +540,7 @@ onUnmounted(() => {
     width: 100%;
     text-align: center;
     padding: 1rem;
+    font-size: 1.1rem;
   }
 
   .menu-btn {
@@ -546,8 +549,7 @@ onUnmounted(() => {
 
   .social-menu {
     position: fixed;
-    top: auto;
-    bottom: 0;
+    top: 100%;
     left: 0;
     right: 0;
     width: 100%;
@@ -566,16 +568,31 @@ onUnmounted(() => {
       transform: translateY(0);
     }
   }
-}
 
-@media (max-width: 480px) {
-  .logo-text {
-    font-size: 1.25rem;
-  }
-  
   .ai-container {
     height: 1.75rem;
     width: 2.25rem;
+  }
+}
+
+/* Add active state for touch devices */
+@media (hover: none) {
+  .nav-links a:active::before {
+    opacity: 0.1;
+    transform: scale(1);
+  }
+
+  .menu-dots-btn:active,
+  .social-button:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+/* Fix for iOS Safari 100vh issue */
+@supports (-webkit-touch-callout: none) {
+  .nav-links {
+    height: -webkit-fill-available;
   }
 }
 </style>
