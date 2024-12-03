@@ -36,3 +36,6 @@ pids
 
 # Windows
 Thumbs.db
+
+# build 
+dist/
