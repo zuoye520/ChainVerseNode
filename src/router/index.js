@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import MyDomainsView from '../views/MyDomainsView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import AITrainingView from '../views/AITrainingView.vue'
+import AINodesView from '../views/AINodesView.vue'
 import AboutView from '../views/AboutView.vue'
 
 const router = createRouter({
@@ -27,6 +28,11 @@ const router = createRouter({
       path: '/ai-training',
       name: 'ai-training',
       component: AITrainingView
+    },
+    {
+      path: '/ai-nodes',
+      name: 'ai-nodes',
+      component: AINodesView
     },
     {
       path: '/about',

@@ -20,6 +20,7 @@
       <div class="nav-links" :class="{ 'active': isMenuOpen }">
         <router-link to="/my-identity" @click="closeMenu">My Identity</router-link>
         <router-link to="/ai-training" @click="closeMenu">AI Training</router-link>
+        <router-link to="/ai-nodes" @click="closeMenu">AI Nodes</router-link>
       </div>
       <div class="right-section">
         <button class="menu-dots-btn" @click="toggleSocialMenu">
@@ -518,7 +519,7 @@ onUnmounted(() => {
   .nav-links {
     display: none;
     position: fixed;
-    top: var(--header-height);
+    top: 70px;
     left: 0;
     right: 0;
     background: rgba(10, 11, 14, 0.95);
