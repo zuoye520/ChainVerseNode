@@ -18,7 +18,7 @@
         </div>
       </router-link>
       <div class="nav-links" :class="{ 'active': isMenuOpen }">
-        <router-link to="/my-domains" @click="closeMenu">My Identity</router-link>
+        <router-link to="/my-identity" @click="closeMenu">My Identity</router-link>
         <router-link to="/ai-training" @click="closeMenu">AI Training</router-link>
       </div>
       <div class="right-section">

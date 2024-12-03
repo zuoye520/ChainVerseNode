@@ -1,5 +1,5 @@
 <template>
-  <div class="my-domains">
+  <div class="my-identity">
     <div class="container">
       <div class="page-header">
         <h1>My Identity</h1>
