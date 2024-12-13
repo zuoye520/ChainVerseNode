@@ -20,7 +20,7 @@
       <div class="nav-links" :class="{ 'active': isMenuOpen }">
         <router-link to="/my-identity" @click="closeMenu">My Identity</router-link>
         <router-link to="/ai-training" @click="closeMenu">AI Training</router-link>
-        <router-link to="/ai-nodes" @click="closeMenu">AI Nodes</router-link>
+        <!-- <router-link to="/ai-nodes" @click="closeMenu">AI Nodes</router-link> -->
       </div>
       <div class="right-section">
         <button class="menu-dots-btn" @click="toggleSocialMenu">
