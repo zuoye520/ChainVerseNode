@@ -31,6 +31,8 @@ export const CHAINS = {
 export const CURRENT_NETWORK = import.meta.env.VITE_APP_ENV === 'mainnet' 
   ? CHAINS[1]
   : CHAINS[2]
+
+export const SUFFIX = '.ai' //域名后缀 .nuls  
 //https://app.pinata.cloud/ 配置
 export const IPFS_CONFIG = {
   apiKey: "60dd3f8d985638706a26",

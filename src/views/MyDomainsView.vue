@@ -65,6 +65,7 @@ const loading = inject('loading')
 const toast = inject('toast')
 // 获取全局配置
 const { proxy } = getCurrentInstance()
+const suffix = proxy.$config.SUFFIX;//后缀
 const showTransferModal = ref(false)
 const selectedDomain = ref(null)
 
@@ -125,7 +126,7 @@ const handleTransfer = async ({ domain, recipient }) => {
     const tokenId = domainId.result;
 
     //如果输入的域名则需要解析出来地址
-    if(recipient.indexOf('.nuls') > -1){
+    if(recipient.indexOf(suffix) > -1){
       const userAddress = await walletStore.invokeView({
         contractAddress: currentChainConfig.value.contracts.domainAddress,
         methodName: "userAddress",

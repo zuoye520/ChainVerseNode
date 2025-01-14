@@ -61,14 +61,16 @@
   </template>
   
   <script setup>
-  import { ref, computed, watch } from 'vue'
+  import { ref, computed, watch, getCurrentInstance } from 'vue'
   import { 
     ArrowRightIcon, 
     ExclamationTriangleIcon,
     ArrowPathIcon 
   } from '@heroicons/vue/24/outline'
   import Modal from './Modal.vue'
-  
+  // 获取全局配置
+  const { proxy } = getCurrentInstance()
+  const suffix = proxy.$config.SUFFIX;//后缀
   const props = defineProps({
     show: {
       type: Boolean,
@@ -91,7 +93,7 @@
     return recipientAddress.value.length > 0 && 
            (recipientAddress.value.startsWith('NULS') || 
             recipientAddress.value.startsWith('tNULS') ||
-            recipientAddress.value.endsWith('.nuls')) 
+            recipientAddress.value.endsWith(suffix)) 
             
   })
   
