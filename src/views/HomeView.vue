@@ -161,7 +161,7 @@ const searchDomain = async() => {
       methodName: "getPriceByDomain",
       methodDesc: "",
   }
-  const suffix = proxy.$config.SUFFIX;//后缀
+  const suffix = "."+proxy.$config.SUFFIX[0];//后缀
   const searchList = [searchQuery.value+suffix,searchQuery.value+suffix,'my'+searchQuery.value+suffix];
   const results = await Promise.all([
       walletStore.invokeView({...data,...{args: [searchList[0]]}}),

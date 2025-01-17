@@ -90,10 +90,16 @@
   
   const isValidAddress = computed(() => {
     // Add NULS address validation logic here
+    const addressSuffix =(recipientAddress.value.split('.')).pop()
+    const findItem = addressSuffix && suffix.find(item=>item == addressSuffix)
     return recipientAddress.value.length > 0 && 
            (recipientAddress.value.startsWith('NULS') || 
             recipientAddress.value.startsWith('tNULS') ||
-            recipientAddress.value.endsWith(suffix)) 
+            findItem) 
+    // return recipientAddress.value.length > 0 && 
+    //        (recipientAddress.value.startsWith('NULS') || 
+    //         recipientAddress.value.startsWith('tNULS') ||
+    //         recipientAddress.value.endsWith('.'+suffix[0]) || recipientAddress.value.endsWith('.'+suffix[1])) 
             
   })
   

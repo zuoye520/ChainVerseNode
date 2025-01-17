@@ -7,9 +7,12 @@ export const CHAINS = {
     decimals: 8,
     rpc: 'https://api.nuls.io', 
     explorer: 'https://nulscan.io',
+    nrc721Address: {
+      "ai":'tNULSeBaMxtUUe2gEYFqkUUMWg6yNWkHqcza5o',
+      "nuls":'tNULSeBaNAKi6YYeoLPmQEjvtPhYeTRd6MZzfE'
+    },
     contracts: {
       domainAddress:'tNULSeBaMvEtDfvZuukDf2mVyfGo3DdiN8KLRG',
-      nrc721Address: 'tNULSeBaN2inyAkyfk7AW5uAUf6cQr4BGSZCCt',
       stakeAddress:'tNULSeBaMx7ZoVNUyf6HHCySkmumRFsajahL2P'
     }
   },
@@ -20,9 +23,12 @@ export const CHAINS = {
     decimals: 8,
     rpc: 'https://beta.api.nuls.io', 
     explorer: 'https://beta.nulscan.io',
+    nrc721Address: {
+      "ai":'tNULSeBaMxtUUe2gEYFqkUUMWg6yNWkHqcza5o',
+      "nuls":'tNULSeBaNAKi6YYeoLPmQEjvtPhYeTRd6MZzfE'
+    },
     contracts: {
       domainAddress:'tNULSeBaN6PdzE7zLsLDCEpLAUnMZMCREV27f4',
-      nrc721Address: 'tNULSeBaNAKi6YYeoLPmQEjvtPhYeTRd6MZzfE',
       stakeAddress:'tNULSeBaN9ivFT3AHDMcBkDcWAuJ4ptQkxoio7'
     }
   }
@@ -32,7 +38,7 @@ export const CURRENT_NETWORK = import.meta.env.VITE_APP_ENV === 'mainnet'
   ? CHAINS[1]
   : CHAINS[2]
 
-export const SUFFIX = '.ai' //域名后缀 .nuls  
+export const SUFFIX = ['ai','nuls'] //域名后缀 .nuls .ai 
 //https://app.pinata.cloud/ 配置
 export const IPFS_CONFIG = {
   apiKey: "60dd3f8d985638706a26",

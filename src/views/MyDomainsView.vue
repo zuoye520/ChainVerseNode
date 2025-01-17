@@ -126,7 +126,10 @@ const handleTransfer = async ({ domain, recipient }) => {
     const tokenId = domainId.result;
 
     //如果输入的域名则需要解析出来地址
-    if(recipient.indexOf(suffix) > -1){
+    const lastSuffix = (recipient.split(".")).pop()
+    const findItem = suffix.find(item=>item == lastSuffix)
+    console.log('lastSuffix:',{lastSuffix,findItem})
+    if(lastSuffix && findItem){
       const userAddress = await walletStore.invokeView({
         contractAddress: currentChainConfig.value.contracts.domainAddress,
         methodName: "userAddress",
@@ -140,12 +143,13 @@ const handleTransfer = async ({ domain, recipient }) => {
       const [domaainAddress] = JSON.parse(userAddress.result)
       recipientAddress = domaainAddress;
     }
-
+    const domainSuffix = (domain.name.split('.')).pop();
+    console.log('domain.name:',domain.name,domainSuffix)
     const from = account.value
     const data = {
       from: from,
       value: 0,
-      contractAddress: currentChainConfig.value.contracts.nrc721Address,
+      contractAddress: currentChainConfig.value.nrc721Address[domainSuffix],
       methodName: "transferFrom",
       methodDesc: "(Address from, Address to, BigInteger tokenId) return void",
       args: [from,recipientAddress,tokenId]
