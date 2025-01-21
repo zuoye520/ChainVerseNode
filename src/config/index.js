@@ -53,7 +53,7 @@ export const NABOX_DOWNLOAD_URL ="https://nabox.io"
 export const TW_URL ="https://x.com/Nuls"
 export const TG_URL ="http://t.me/Nulsio"
 export const DC_URL ="http://discord.com/invite/aRCwbj47WN"
-export const GITHUB_URL ="https://github.com/cobble586/NulsDomainContract"
+export const GITHUB_URL ="https://github.com/nuls-io/nulsai-id"
 //默认头像
 export const DEFAULT_AVATAR = 'https://nuls-cf.oss-us-west-1.aliyuncs.com/icon/NULS.png'
 
