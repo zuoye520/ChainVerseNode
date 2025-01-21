@@ -8,6 +8,7 @@ export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   
   return {
+    base: env.VITE_APP_CDN_URL, // 设置资源的基础路径
     plugins: [vue()],
     define: {
       // 在这里定义全局常量替换
