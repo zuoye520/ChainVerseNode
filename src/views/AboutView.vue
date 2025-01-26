@@ -72,7 +72,7 @@ const faqs = [
   },
   {
     question: "Where does NULS AI's passive income come from?",
-    answer: "90% of the NULS AI digital identity registration fee will be pledged to the NULS node and locked permanently.",
+    answer: "80% of the NULS AI digital identity registration fee will be pledged to the NULS node and locked permanently.",
     icon: CurrencyDollarIcon
   },
   {
