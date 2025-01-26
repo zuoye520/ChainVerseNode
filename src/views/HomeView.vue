@@ -49,7 +49,7 @@
           <XMarkIcon class="close-icon" />
         </button>
       </div>
-      <div class="lucky" v-show="airdropNum">🎉You have {{ airdropNum }} free registration opportunities, but you can only register 4 or more AI identities</div>
+      <div class="lucky" v-show="airdropNum">🎉 You can register {{ airdropNum }} AI identities with more than 4 characters for free.</div>
       <div class="domain-list">
         <div v-for="domain in searchResults" :key="domain.name" class="domain-item">
           <div class="domain-info">
@@ -194,8 +194,10 @@ const registerDomain = async(domain)=>{
         args: [domain.name,accountPub.value],
         multyAssetValues: []
     }
-    //有空投次数就可以免费mint
-    if(airdropNum.value >0 && domain.name.length >8){
+    const suffix = "."+proxy.$config.SUFFIX[0];//后缀
+    const name = (domain.name.split(suffix))[0]
+    //有空投次数就可以免费mint 且域名必须大于4位
+    if(airdropNum.value >0 && name.length >4){
       data.value = 0
       data.methodName = "mintHistory"
     }
