@@ -20,6 +20,7 @@
             <input 
               type="text" 
               v-model="searchQuery" 
+              @input="validateDomain"
               placeholder="Search for your digital identity"
               class="cyber-input"
               @keyup.enter="searchDomain"
@@ -136,8 +137,22 @@ const setupCircuitAnimation = () => {
   }
 }
 
+
+const validateDomain = (event) => {
+  // 获取用户输入的值
+  let value = event.target.value.toLowerCase(); // 更新输入框的值（自动转换为小写）
+  // 替换掉不符合要求的字符（非小写字母和数字）
+  value = value.replace(/[^a-z0-9]/g, '');
+  searchQuery.value = value;
+};
+
+
 const searchDomain = async() => {
-  // //console.log('currentChainConfig:',currentChainConfig)
+  
+  //console.log('currentChainConfig:',currentChainConfig)
+  try {
+    
+  
   if(!account.value){
     await walletStore.connect()
     return;
@@ -194,6 +209,11 @@ const searchDomain = async() => {
   searchResults.value = list;
   loading.hide()
   showModal.value = true
+  } catch (error) {
+    console.error('error:',error)
+  } finally{
+    console.log('finally')
+  }
 }
 const registerDomain = async(domain)=>{
   try {

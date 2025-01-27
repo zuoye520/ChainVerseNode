@@ -6,6 +6,10 @@ import * as config from './config'
 import * as format from './utils/format'
 import copy from 'copy-to-clipboard';
 
+import VConsole from 'vconsole'
+new VConsole();
+
+
 // 初始化 Pinia
 const pinia = createPinia()
 const app = createApp(App)
