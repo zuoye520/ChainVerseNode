@@ -20,7 +20,7 @@ export const nulsUsd = async (symbol= 'NULSUSDT')=>{
     const response = await sendRequest(url, { method: 'get' });
     
     if(!response.price) throw response
-    console.log('nulsUsd:',response.price)
+    //console.log('nulsUsd:',response.price)
     return response.price;
   } catch (error) {
     // 捕获并记录任何发生的错误

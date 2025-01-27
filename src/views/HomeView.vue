@@ -99,22 +99,22 @@ const searchQuery = ref('')
 const searchResults = ref([])
 const showModal = ref(false)
 onBeforeMount(() => {
-  console.log('Component will be mounted')
+  //console.log('Component will be mounted')
   initializeData()
 })
 
 onMounted(() => {
-  console.log('Component mounted')
+  //console.log('Component mounted')
   window.addEventListener('resize', handleResize)
   setupCircuitAnimation()
 })
 
 onUpdated(() => {
-  console.log('Component updated')
+  //console.log('Component updated')
 })
 
 onUnmounted(() => {
-  console.log('Component will be unmounted')
+  //console.log('Component will be unmounted')
   window.removeEventListener('resize', handleResize)
 })
 
@@ -126,7 +126,7 @@ const initializeData = () => {
 }
 
 const handleResize = () => {
-  console.log('Window resized')
+  //console.log('Window resized')
 }
 
 const setupCircuitAnimation = () => {
@@ -137,7 +137,7 @@ const setupCircuitAnimation = () => {
 }
 
 const searchDomain = async() => {
-  // console.log('currentChainConfig:',currentChainConfig)
+  // //console.log('currentChainConfig:',currentChainConfig)
   if(!account.value){
     await walletStore.connect()
     return;
@@ -154,7 +154,7 @@ const searchDomain = async() => {
       methodDesc: "",
       args: [account.value],
   })
-  console.log('userHistoryQuota:',quota)
+  //console.log('userHistoryQuota:',quota)
   airdropNum.value = quota.result*1
 
 
@@ -180,7 +180,7 @@ const searchDomain = async() => {
   }
   let {result} = await walletStore.invokeView(data)
   result = JSON.parse(result)
-  // console.log('results:',result)
+  // //console.log('results:',result)
   const list = []
   for (let index = 0; index < 3; index++) {
     const item = JSON.parse(result[index])
@@ -197,7 +197,7 @@ const searchDomain = async() => {
 }
 const registerDomain = async(domain)=>{
   try {
-    console.log('domain:',domain.name)
+    //console.log('domain:',domain.name)
     const data = {
         from: account.value,
         value: proxy.$format.fromAmount(domain.price),
@@ -214,9 +214,9 @@ const registerDomain = async(domain)=>{
       data.value = 0
       data.methodName = "mintHistory"
     }
-    console.log('data:',data)
+    //console.log('data:',data)
     const result = await walletStore.contractCall(data) // 返回交易hash
-    console.log('result:',result)
+    //console.log('result:',result)
     showModal.value = false;
     toast.show('Transaction sent successfully', 'success')
     

@@ -53,11 +53,11 @@ export const useWalletStore = defineStore('wallet', () => {
       isConnecting.value = true
       error.value = null
       account.value = await walletService.connect();
-      console.log('account address:',account.value)
+      //console.log('account address:',account.value)
       accountPub.value = await walletService.getPub(account.value);
-      console.log('account Pub:',accountPub.value)
+      //console.log('account Pub:',accountPub.value)
       chainInfo.value = await walletService.getChainInfo()
-      console.log('getChainInfo:',chainInfo.value)
+      //console.log('getChainInfo:',chainInfo.value)
       // 设置监听器
       setupEventListeners()
       // 检查网络状态
@@ -75,7 +75,7 @@ export const useWalletStore = defineStore('wallet', () => {
 
   async function getBalance(){
     const balance = await walletService.getNulsBalance();
-    // console.log('balance:',{balance,nulsUsd})
+    // //console.log('balance:',{balance,nulsUsd})
     nulsBalance.value = balance
     return balance
   }
@@ -139,7 +139,7 @@ export const useWalletStore = defineStore('wallet', () => {
   async function contractCall(data){
     try {
      const result = await walletService.nabox.contractCall(data)
-     console.log('contractCall result:',error)
+     //console.log('contractCall result:',error)
      return result;
     } catch (error) {
       console.error('contractCall error:',error)
@@ -178,7 +178,7 @@ export const useWalletStore = defineStore('wallet', () => {
       let result = await invokeView(data)
       if(!result.result) throw result;
       result = JSON.parse(result.result)
-      console.log('result:',result)
+      //console.log('result:',result)
       if(!result) return;
       const activeDomains = result.activeDomains.map(domain=>({
         name:domain,
@@ -197,7 +197,7 @@ export const useWalletStore = defineStore('wallet', () => {
       domains.value = [...activeDomains,...inactiveDomains] 
       return domains;
     } catch (error) {
-      console.log('loadDomains error:',error)
+      //console.log('loadDomains error:',error)
       return []
     }
     
@@ -213,7 +213,7 @@ export const useWalletStore = defineStore('wallet', () => {
         invokeView({...data, methodName: "getUserRewardReceived"}),
         invokeView({...data, methodName: "pendingAward"})
       ])
-      console.log('Rewards:',{received:received.result,pending:pending.result})
+      //console.log('Rewards:',{received:received.result,pending:pending.result})
       totalRewards.value = fromAmount(received.result)
       unclaimedRewards.value =  fromAmount(pending.result)
       // TODO: Add USD conversion
@@ -238,12 +238,12 @@ export const useWalletStore = defineStore('wallet', () => {
         methodName: "userURI",
         args: [account.value]
       })
-      console.log('userURI:',result)
+      //console.log('userURI:',result)
       userUri.value = result || ''
       if(!result) return;
       const {data:userProfile} = await getFile(userUri.value)
       
-      console.log('userProfile:',userProfile)
+      //console.log('userProfile:',userProfile)
       // if (userProfile) {
       //   description.value = userProfile.description || ''
       //   location.value = userProfile.location || ''
@@ -273,7 +273,7 @@ export const useWalletStore = defineStore('wallet', () => {
           account.value = currentAccount;
           accountPub.value = await walletService.getPub(currentAccount);
           chainInfo.value = await walletService.getChainInfo();
-          console.log('walletInfo:',{...chainInfo.value,...{currentAccount:account.value,accountPub:accountPub.value}});
+          //console.log('walletInfo:',{...chainInfo.value,...{currentAccount:account.value,accountPub:accountPub.value}});
           await checkNetwork()
           setupEventListeners()
           //定时拉取数据,退出钱包需要清除定时任务

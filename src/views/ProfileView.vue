@@ -207,7 +207,7 @@ onMounted(() => {
 })
 
 onUpdated(() => {
-  console.log('Component updated')
+  //console.log('Component updated')
 })
 
 onUnmounted(() => {
@@ -235,7 +235,7 @@ const loadUserProfile = async () => {
   if(savedProfile) return;
   try {
     const userProfile = await walletStore.loadUserProfile(userUri.value)
-    console.log('userProfile:',userProfile)
+    //console.log('userProfile:',userProfile)
     if (userProfile) {
       description.value = userProfile.description || ''
       location.value = userProfile.location || ''
@@ -303,7 +303,7 @@ const saveAvatar = async () => {
   try {
     loading.show('Uploading avatar...')
     const result = await walletStore.uploadFile(selectedFile.value)
-    console.log('uploadFile result:', result)
+    //console.log('uploadFile result:', result)
     avatarUrl.value = `https://${proxy.$config.IPFS_CONFIG.gateway}/ipfs/${result.IpfsHash}`
     avatarUriHash.value = result.IpfsHash
     selectedFile.value = null
@@ -391,7 +391,7 @@ const saveProfile = async () => {
     }
 
     const result = await walletStore.uploadJson(profileData)
-    console.log('upload Json result:', result)
+    //console.log('upload Json result:', result)
 
     const data = {
       from: account.value,
@@ -401,7 +401,7 @@ const saveProfile = async () => {
       args: [result.IpfsHash]
     }
     const resUri = await walletStore.contractCall(data)
-    console.log(' setUserUri result:', resUri)
+    //console.log(' setUserUri result:', resUri)
     saveProfileToLocalStorage()
     
     toast.show('Profile saved successfully', 'success')

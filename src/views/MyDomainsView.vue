@@ -93,7 +93,7 @@ const claimAllRewards = async () => {
       methodDesc: "",
     }
     const result = await walletStore.contractCall(data)
-    console.log('claimAllRewards result',result)
+    //console.log('claimAllRewards result',result)
     toast.show('Rewards claimed successfully', 'success')
     await walletStore.loadRewards()
   } catch (error) {
@@ -114,7 +114,7 @@ const transferDomain = (domain) => {
 const handleTransfer = async ({ domain, recipient }) => {
   try {
     loading.show('Transferring domain...')
-    console.log('domain, recipient',{ domain, recipient })
+    //console.log('domain, recipient',{ domain, recipient })
     let recipientAddress = recipient;//接收者地址
     //获取域名ID
     const domainId = await walletStore.invokeView({
@@ -122,20 +122,20 @@ const handleTransfer = async ({ domain, recipient }) => {
       methodName: "domainId",
       args: [domain.name]
     })
-    console.log('tokenId:',domainId)
+    //console.log('tokenId:',domainId)
     const tokenId = domainId.result;
 
     //如果输入的域名则需要解析出来地址
     const lastSuffix = (recipient.split(".")).pop()
     const findItem = suffix.find(item=>item == lastSuffix)
-    console.log('lastSuffix:',{lastSuffix,findItem})
+    //console.log('lastSuffix:',{lastSuffix,findItem})
     if(lastSuffix && findItem){
       const userAddress = await walletStore.invokeView({
         contractAddress: currentChainConfig.value.contracts.domainAddress,
         methodName: "userAddress",
         args: [recipient]
       })
-      console.log('userAddress:',userAddress)
+      //console.log('userAddress:',userAddress)
       if(!userAddress.result) {
         toast.show('The AI Identity does not exist', 'error')
         return;
@@ -144,7 +144,7 @@ const handleTransfer = async ({ domain, recipient }) => {
       recipientAddress = domaainAddress;
     }
     const domainSuffix = (domain.name.split('.')).pop();
-    console.log('domain.name:',domain.name,domainSuffix)
+    //console.log('domain.name:',domain.name,domainSuffix)
     const from = account.value
     const data = {
       from: from,
@@ -179,7 +179,7 @@ const setPrimaryIdentity = async (domain) => {
       args: [domain.name,accountPub.value],
     }
     const resSetPrimaryIdentity = await walletStore.contractCall(data)
-    console.log('resSetPrimaryIdentity:',resSetPrimaryIdentity)
+    //console.log('resSetPrimaryIdentity:',resSetPrimaryIdentity)
     toast.show('Primary identity updated', 'success')
     await walletStore.loadDomains()
   } catch (error) {
@@ -200,7 +200,7 @@ const toggleRewards = async (domain) => {
         methodName: "getPriceByDomain",
         args: [domain.name]
     })
-    console.log('domain price:',price)
+    //console.log('domain price:',price)
     const [domainPrice] = JSON.parse(price);
     const data = {
       from: account.value,
@@ -210,7 +210,7 @@ const toggleRewards = async (domain) => {
       methodDesc: "",
       args: [domain.name,accountPub.value],
     }
-    console.log('activeAward:',data)
+    //console.log('activeAward:',data)
     await walletStore.contractCall(data)
     toast.show(`Rewards ${domain.rewardsActive ? 'deactivated' : 'activated'} successfully`, 'success')
     await walletStore.loadDomains()
