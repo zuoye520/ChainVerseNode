@@ -8,12 +8,12 @@ export const CHAINS = {
     rpc: 'https://api.nuls.io', 
     explorer: 'https://nulscan.io',
     nrc721Address: {
-      "ai":'NULSd6Hgjwtk5ziqeuNFv95zqC9bhQ2LX77Ws'
+      "ai":'NULSd6HgpS6L5MnYRKeHrwmouiYZLz12AiXp9'
     },
     toolContractAddress:'NULSd6Hgrnv1oxcdyhzZmsu7HWgk7vcaR6nMR',
     contracts: {
-      domainAddress:'NULSd6HgknJEpCGBBJ4mkyXdj1o28JLxMcu4D',
-      stakeAddress:'NULSd6Hgzap8W6T29bVVB5wvu5aMwAHYBhyCw',
+      domainAddress:'NULSd6HgsFcPKAwaKWaiTTbWDeL27x8JT48HZ',
+      stakeAddress:'NULSd6HgupzoG3LDDyK28KYdEcQ6vPn79etKM',
     }
   },
   2: {
