@@ -10,9 +10,10 @@ export const CHAINS = {
     nrc721Address: {
       "ai":'NULSd6Hgjwtk5ziqeuNFv95zqC9bhQ2LX77Ws'
     },
+    toolContractAddress:'NULSd6Hgrnv1oxcdyhzZmsu7HWgk7vcaR6nMR',
     contracts: {
       domainAddress:'NULSd6HgknJEpCGBBJ4mkyXdj1o28JLxMcu4D',
-      stakeAddress:'NULSd6Hgzap8W6T29bVVB5wvu5aMwAHYBhyCw'
+      stakeAddress:'NULSd6Hgzap8W6T29bVVB5wvu5aMwAHYBhyCw',
     }
   },
   2: {
@@ -26,9 +27,11 @@ export const CHAINS = {
       "ai":'tNULSeBaMxtUUe2gEYFqkUUMWg6yNWkHqcza5o',
       "nuls":'tNULSeBaNAKi6YYeoLPmQEjvtPhYeTRd6MZzfE'
     },
+    toolContractAddress:'tNULSeBaMwP81fGuNPRRSpKxLto1o1hQPnUTJQ',
     contracts: {
       domainAddress:'tNULSeBaN6PdzE7zLsLDCEpLAUnMZMCREV27f4',
-      stakeAddress:'tNULSeBaN9ivFT3AHDMcBkDcWAuJ4ptQkxoio7'
+      stakeAddress:'tNULSeBaN9ivFT3AHDMcBkDcWAuJ4ptQkxoio7',
+      
     }
   }
 }

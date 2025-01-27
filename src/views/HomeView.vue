@@ -156,28 +156,41 @@ const searchDomain = async() => {
   })
   console.log('userHistoryQuota:',quota)
   airdropNum.value = quota.result*1
-  const data = {
-      contractAddress: currentChainConfig.value.contracts.domainAddress,
-      methodName: "getPriceByDomain",
-      methodDesc: "",
-  }
+
+
   const suffix = "."+proxy.$config.SUFFIX[0];//后缀
   const searchList = [searchQuery.value+suffix,'1'+searchQuery.value+suffix,'my'+searchQuery.value+suffix];
-  const results = await Promise.all([
-      walletStore.invokeView({...data,...{args: [searchList[0]]}}),
-      walletStore.invokeView({...data,...{args: [searchList[1]]}}),
-      walletStore.invokeView({...data,...{args: [searchList[2]]}})
-    ]);
-    console.log('searchDomain:',results)
+
+  const data = {
+      contractAddress: currentChainConfig.value.toolContractAddress,
+      methodName: "aggregateStrict",
+      args:[
+        [
+          currentChainConfig.value.contracts.domainAddress,
+          currentChainConfig.value.contracts.domainAddress,
+          currentChainConfig.value.contracts.domainAddress,
+          currentChainConfig.value.contracts.domainAddress,
+          currentChainConfig.value.contracts.domainAddress,
+          currentChainConfig.value.contracts.domainAddress,
+        ],
+        ['getPriceByDomain','getPriceByDomain','getPriceByDomain','domainId','domainId','domainId'],
+        [...searchList,...searchList],
+        false
+      ],
+  }
+  let {result} = await walletStore.invokeView(data)
+  result = JSON.parse(result)
+  // console.log('results:',result)
   const list = []
-  results.forEach((item,index)=>{
-    const result = JSON.parse(item.result)
+  for (let index = 0; index < 3; index++) {
+    const item = JSON.parse(result[index])
     list.push({
       name:searchList[index],
-      price:result[0],
-      registered:result[1]==='true'
+      price:item[0],
+      registered:result[index+3] !== ""
     })
-  })
+    
+  }
   searchResults.value = list;
   loading.hide()
   showModal.value = true
