@@ -212,7 +212,7 @@ const searchDomain = async() => {
   } catch (error) {
     console.error('error:',error)
   } finally{
-    console.log('finally')
+    // console.log('finally')
   }
 }
 const registerDomain = async(domain)=>{

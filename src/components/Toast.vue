@@ -55,8 +55,7 @@ const toastIcon = computed(() => {
 .toast {
   position: fixed;
   top: 5.5rem;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 2rem;
   padding: 1rem 2rem;
   border-radius: 8px;
   color: white;
@@ -103,6 +102,14 @@ const toastIcon = computed(() => {
 .toast-enter-from,
 .toast-leave-to {
   opacity: 0;
-  transform: translate(-50%, 1rem);
+  transform: translateX(100%);
+}
+
+@media (max-width: 768px) {
+  .toast {
+    right: 1rem;
+    left: 1rem;
+    min-width: auto;
+  }
 }
 </style>
