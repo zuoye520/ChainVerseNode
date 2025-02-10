@@ -23,6 +23,8 @@ export const useWalletStore = defineStore('wallet', () => {
   // 奖励数据
   const totalRewards = ref('0')
   const totalRewardsUsd = ref('0')
+  const rewardReceived = ref('0')
+  const rewardReceivedUsd = ref('0')
   const unclaimedRewards = ref('0')
   const unclaimedRewardsUsd = ref('0')
 
@@ -214,10 +216,13 @@ export const useWalletStore = defineStore('wallet', () => {
         invokeView({...data, methodName: "pendingAward"})
       ])
       //console.log('Rewards:',{received:received.result,pending:pending.result})
-      totalRewards.value = fromAmount(received.result)
-      unclaimedRewards.value =  fromAmount(pending.result)
+      
+      rewardReceived.value = fromAmount(received.result)
+      unclaimedRewards.value = fromAmount(pending.result)
+      totalRewards.value = fromAmount(received.result)*1 + fromAmount(pending.result)*1
       // TODO: Add USD conversion
       totalRewardsUsd.value = formatUsd(totalRewards.value * nulsUsdPrice.value)
+      rewardReceivedUsd.value = formatUsd(rewardReceived.value * nulsUsdPrice.value)
       unclaimedRewardsUsd.value = formatUsd(unclaimedRewards.value * nulsUsdPrice.value)
       return {
         totalRewards,
