@@ -160,7 +160,6 @@ const handleTransfer = async ({ domain, recipient }) => {
   } catch (error) {
     console.error('Transfer failed:', error)
     toast.show('Failed to transfer domain', 'error')
-    throw error
   } finally {
     loading.hide()
   }
