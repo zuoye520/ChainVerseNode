@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { ref, getCurrentInstance,provide, watch } from 'vue'
+import { ref,onMounted, getCurrentInstance,provide, watch } from 'vue'
 import Header from './components/Header.vue'
 import Loading from './components/Loading.vue'
 import Toast from './components/Toast.vue'
@@ -41,6 +41,10 @@ import Modal from './components/Modal.vue'
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 import { useWalletStore } from './stores/wallet'
 import { storeToRefs } from 'pinia'
+import { useReferStore } from './stores/refer'
+const referStore = useReferStore()
+const store = useWalletStore()
+const { account } = storeToRefs(store)
 
 const walletStore = useWalletStore()
 const { error } = storeToRefs(walletStore)
@@ -49,6 +53,30 @@ const { proxy } = getCurrentInstance()
 const isLoading = ref(false)
 const loadingText = ref('Loading')
 const showErrorModal = ref(true)
+
+const urlParams = new URLSearchParams(window.location.search);
+const inviteCode = ref(urlParams.get("inviteCode"));
+
+onMounted(() => {
+  handelInvite()
+})
+
+//缓存邀请地址
+const handelInvite = ()=>{
+  if(inviteCode.value){
+    //缓存邀请码
+    localStorage.setItem('inviteCode',inviteCode.value)
+  }
+}
+//推荐注册
+const handelRegister = async ()=>{
+  const inviter = localStorage.getItem('inviteCode')
+  //注册
+  await referStore.register({
+      address: account.value,
+      inviter: inviter
+    })
+}
 
 // Loading provider
 provide('loading', {
@@ -105,6 +133,13 @@ watch(error, (newError) => {
   if (newError) {
     showErrorModal.value = true
   }
+})
+// 监听页码变化
+watch(account, (newAccount) => {
+  console.log('app.vue watch account:',newAccount)
+  // 加载新页数据
+  if(newAccount) handelRegister()
+  
 })
 
 // Error modal methods

@@ -5,6 +5,7 @@ import ProfileView from '../views/ProfileView.vue'
 import AITrainingView from '../views/AITrainingView.vue'
 import AINodesView from '../views/AINodesView.vue'
 import AboutView from '../views/AboutView.vue'
+import ReferralView from '../views/ReferralView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: '/about',
       name: 'about',
       component: AboutView
+    },
+    {
+      path: '/referral',
+      name: 'referral',
+      component: ReferralView
     }
   ]
 })

@@ -2,7 +2,7 @@
 import { sendRequest } from '../utils/httpUtils'
 import { PinataSDK } from "pinata-web3";
 
-import { BINANCE_URL,IPFS_CONFIG } from '../config'
+import { API_URL,BINANCE_URL,IPFS_CONFIG } from '../config'
 const pinata = new PinataSDK({
   pinataJwt: IPFS_CONFIG.jwt,
   pinataGateway: IPFS_CONFIG.gateway,
@@ -55,4 +55,70 @@ export const uploadFile = async (file)=>{
 export const getFile = async (hash)=>{
   const data = await pinata.gateways.get(hash);
   return data 
+}
+
+
+
+/**
+ * NFT API -- 注册
+ * @param {*} params 
+ * @returns 
+ */
+export const register = async (params= {})=>{
+  const  data = params;
+  const url = `${API_URL}/naiai/register`;
+  const response = await sendRequest(url, { data, method: 'post' });
+  console.log('register result:',{data,response})
+  if(!response || response.code !=0) throw response
+  return response.data;
+}
+
+/**
+ * NFT API -- 用户信息
+ * @returns 
+ */
+export const userInfo = async (params = {})=>{
+ const data = params
+  const url = `${API_URL}/naiai/user/info`;
+  const response = await sendRequest(url, {
+    data, 
+    method: 'post'
+  });
+  console.log('userInfo result:',{data,response})
+  if(!response || response.code !=0) throw response
+  return response.data;
+}
+/**
+ * NFT API -- 邀请奖励记录
+ * @param {*} params 
+ * @returns 
+ */
+export const historyRefers = async (params= {})=>{
+  const  data = {
+    address:params.address,
+    pageNum: params.pageNum || 1,
+    pageSize: params.pageSize || 10,
+  }
+  const url = `${API_URL}/naiai/user/refer`;
+  const response = await sendRequest(url, { data, method: 'post' });
+  console.log('historyRefers result:',{data,response})
+  if(!response || response.code !=0) throw response
+  return response.data;
+}
+
+
+/**
+ * NFT API -- 用户申请提现
+ * @param {*} params 
+ * @returns 
+ */
+export const userWithdrawal = async (params= {})=>{
+  const  data = {
+    address:params.address
+  }
+  const url = `${API_URL}/naiai/user/withdrawal/apply`;
+  const response = await sendRequest(url, { data, method: 'post' });
+  console.log('userWithdrawal result:',{data,response})
+  if(!response || response.code !=0) throw response
+  return response.data;
 }

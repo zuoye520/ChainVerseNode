@@ -54,6 +54,15 @@
                 </div>
               </button>
             </router-link>
+            <router-link to="/referral" custom v-slot="{ navigate }">
+              <button class="menu-item" @click="goToReferral(navigate)">
+                <UserGroupIcon class="menu-icon" />
+                <div class="menu-item-content">
+                  <span class="menu-item-title">Refer Friends</span>
+                  <span class="menu-item-description">Earn rewards by inviting friends</span>
+                </div>
+              </button>
+            </router-link>
           </div>
 
           <div class="menu-section">
@@ -90,7 +99,8 @@ import {
   ArrowRightOnRectangleIcon,
   DocumentDuplicateIcon,
   ArrowTopRightOnSquareIcon,
-  ChevronDownIcon
+  ChevronDownIcon,
+  UserGroupIcon
 } from '@heroicons/vue/24/outline'
 import { WalletIcon } from '@heroicons/vue/24/solid'
 
@@ -149,6 +159,11 @@ function openExplorer() {
 }
 
 function goToProfile(navigate) {
+  showWalletMenu.value = false
+  navigate()
+}
+
+function goToReferral(navigate) {
   showWalletMenu.value = false
   navigate()
 }
@@ -479,7 +494,8 @@ function toggleWalletMenu() {
 
   .wallet-menu {
     position: fixed;
-    top: 100%;
+    top: auto;
+    bottom: 0;
     left: 0;
     right: 0;
     width: 100%;

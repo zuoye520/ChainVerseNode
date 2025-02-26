@@ -49,6 +49,9 @@ export const IPFS_CONFIG = {
 }
 //币安API URL
 export const BINANCE_URL ="https://api.binance.com"
+//API URL 
+export const API_URL = import.meta.env.VITE_APP_API_URL 
+
 //NABOX下载链接
 export const NABOX_DOWNLOAD_URL ="https://nabox.io"
 export const TW_URL ="https://x.com/Nuls"
