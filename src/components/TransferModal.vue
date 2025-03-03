@@ -7,7 +7,7 @@
     >
       <div class="transfer-modal">
         <div class="domain-info">
-          <h4>AI Identity</h4>
+          <h4>AI Node</h4>
           <div class="domain-name">{{ domain?.name }}</div>
         </div>
   
@@ -18,7 +18,7 @@
               v-model="recipientAddress"
               type="text"
               class="cyber-input"
-              placeholder="Enter AI Identity / NULS address"
+              placeholder="Enter AI Node / NULS address"
               :class="{ 'error': showError }"
             />
             <div v-if="showError" class="error-message">
@@ -29,7 +29,7 @@
   
         <div class="warning-message">
           <ExclamationTriangleIcon class="warning-icon" />
-          <p>This action cannot be undone. The AI Identity will be transferred permanently.</p>
+          <p>This action cannot be undone. The AI Node will be transferred permanently.</p>
         </div>
       </div>
   
@@ -186,7 +186,7 @@
   .cyber-input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(0, 228, 134, 0.2);
+    box-shadow: 0 0 0 2px rgba(0, 194, 255, 0.2);
   }
   
   .cyber-input.error {
@@ -249,7 +249,7 @@
   }
   
   .cyber-button.primary {
-    background: var(--primary);
+    background: var(--gradient-primary);
     color: white;
     border: none;
   }
@@ -264,8 +264,7 @@
   }
   
   .cyber-button.primary:hover:not(:disabled) {
-    background: var(--primary-dark);
-    box-shadow: 0 4px 12px rgba(0, 228, 134, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 194, 255, 0.3);
   }
   
   .cyber-button:disabled {

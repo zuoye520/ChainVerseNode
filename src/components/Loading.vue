@@ -39,7 +39,7 @@ defineProps({
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(10, 11, 14, 0.8);
+  background: rgba(10, 14, 23, 0.8);
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;

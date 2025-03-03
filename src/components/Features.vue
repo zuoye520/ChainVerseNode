@@ -23,26 +23,26 @@
 
 <script setup>
 import { 
-  UserCircleIcon,
+  ServerIcon,
   CurrencyDollarIcon,
   UsersIcon
 } from '@heroicons/vue/24/outline'
 
 const features = [
   {
-    icon: UserCircleIcon,
-    title: 'AI Digital Identity',
-    description: 'Use your NULS AI identity as your digital presence in the NULS ecosystem and AI system'
+    icon: ServerIcon,
+    title: 'AI Node Network',
+    description: 'Register your AI node to become part of the ChainVerse ecosystem and contribute to the decentralized AI network'
   },
   {
     icon: CurrencyDollarIcon,
-    title: 'Valuable ID',
-    description: 'Locked liquidity will continue to receive NULS POS rewards. Train identity AI to improve its knowledge and sell it to those in need'
+    title: 'Passive Income',
+    description: 'Earn rewards by running AI nodes that contribute computing resources to the network and receive continuous passive income'
   },
   {
     icon: UsersIcon,
     title: 'Connect & Collaborate',
-    description: 'Easily connect and collaborate through AI digital identity'
+    description: 'Join a community of node operators and AI enthusiasts to build the future of decentralized artificial intelligence'
   }
 ]
 </script>
@@ -68,9 +68,9 @@ const features = [
   display: flex;
   gap: 1.5rem;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   backdrop-filter: blur(10px);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -83,7 +83,7 @@ const features = [
   inset: 0;
   background: radial-gradient(
     circle at var(--x, 50%) var(--y, 50%),
-    rgba(0, 228, 134, 0.1) 0%,
+    rgba(0, 194, 255, 0.1) 0%,
     transparent 50%
   );
   opacity: 0;
@@ -95,8 +95,8 @@ const features = [
   border-color: var(--primary);
   box-shadow: 
     0 10px 20px rgba(0, 0, 0, 0.2),
-    0 0 20px rgba(0, 228, 134, 0.2),
-    inset 0 0 20px rgba(0, 228, 134, 0.1);
+    0 0 20px rgba(0, 194, 255, 0.2),
+    inset 0 0 20px rgba(0, 194, 255, 0.1);
 }
 
 .feature-item:hover::before {
@@ -142,7 +142,7 @@ const features = [
   border-radius: 50%;
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(0, 228, 134, 0.2) 0%,
+    rgba(0, 194, 255, 0.2) 0%,
     transparent 70%
   );
   animation: pulse 2s ease-in-out infinite;
@@ -179,13 +179,13 @@ const features = [
   color: var(--primary);
   position: relative;
   z-index: 1;
-  filter: drop-shadow(0 0 8px rgba(0, 228, 134, 0.3));
+  filter: drop-shadow(0 0 8px rgba(0, 194, 255, 0.3));
   transition: transform 0.3s;
 }
 
 .feature-item:hover .icon {
   transform: scale(1.1);
-  filter: drop-shadow(0 0 12px rgba(0, 228, 134, 0.5));
+  filter: drop-shadow(0 0 12px rgba(0, 194, 255, 0.5));
 }
 
 .feature-content {

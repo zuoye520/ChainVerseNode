@@ -72,8 +72,8 @@
   <style scoped>
   .rewards-stats {
     margin-bottom: 2rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 1.5rem;
   }
@@ -94,7 +94,7 @@
   .stat-icon {
     width: 48px;
     height: 48px;
-    background: rgba(0, 228, 134, 0.1);
+    background: rgba(0, 194, 255, 0.1);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -150,7 +150,7 @@
   }
   
   .cyber-button.primary {
-    background: var(--primary);
+    background: var(--gradient-primary);
     color: white;
     border-color: transparent;
   }
@@ -160,8 +160,7 @@
   }
   
   .cyber-button.primary:hover:not(:disabled) {
-    background: var(--primary-dark);
-    box-shadow: 0 4px 12px rgba(0, 228, 134, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 194, 255, 0.2);
   }
   
   .cyber-button:disabled {

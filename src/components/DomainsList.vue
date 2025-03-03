@@ -22,12 +22,12 @@
               </span>
             </div>
           </div>
-          <div class="actions-menu" v-click-outside="closeAllActions">
+          <div class="actions-menu" v-show="!domain.rewardsActive" v-click-outside="closeAllActions">
             <button class="action-dots" @click="toggleActions(domain)">
               <EllipsisVerticalIcon class="dots-icon" />
             </button>
             <div v-if="domain.showActions" class="actions-popup">
-              <button class="action-item" @click="transferDomain(domain)">
+              <!-- <button class="action-item" @click="transferDomain(domain)">
                 <ArrowRightIcon class="action-icon" />
                 Transfer
               </button>
@@ -38,7 +38,7 @@
               >
                 <StarIcon class="action-icon" />
                 Set as primary
-              </button>
+              </button> -->
               <button 
                 v-if="!domain.rewardsActive"
                 class="action-item"
@@ -112,8 +112,8 @@
   }
   
   .domain-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 1.5rem;
     transition: all 0.3s;
@@ -166,9 +166,9 @@
   }
   
   .tag.primary {
-    background: rgba(0, 228, 134, 0.1);
+    background: rgba(0, 194, 255, 0.1);
     color: var(--primary);
-    border-color: rgba(0, 228, 134, 0.2);
+    border-color: rgba(0, 194, 255, 0.2);
   }
   
   .tag.rewards {
@@ -178,15 +178,15 @@
   }
   
   .tag.rewards.active {
-    background: rgba(0, 228, 134, 0.1);
+    background: rgba(0, 194, 255, 0.1);
     color: var(--primary);
-    border-color: rgba(0, 228, 134, 0.2);
+    border-color: rgba(0, 194, 255, 0.2);
   }
   
   .tag.permanent {
     background: rgba(255, 255, 255, 0.05);
     color: var(--primary);
-    border-color: rgba(0, 228, 134, 0.2);
+    border-color: rgba(0, 194, 255, 0.2);
   }
   
   .actions-menu {
@@ -222,9 +222,9 @@
     top: 100%;
     right: 0;
     margin-top: 0.5rem;
-    background: rgba(10, 11, 14, 0.95);
+    background: rgba(10, 14, 23, 0.95);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     min-width: 200px;
     overflow: hidden;

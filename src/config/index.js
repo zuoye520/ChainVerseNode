@@ -54,10 +54,10 @@ export const API_URL = import.meta.env.VITE_APP_API_URL
 
 //NABOX下载链接
 export const NABOX_DOWNLOAD_URL ="https://nabox.io"
-export const TW_URL ="https://x.com/Nuls"
-export const TG_URL ="http://t.me/Nulsio"
-export const DC_URL ="http://discord.com/invite/aRCwbj47WN"
-export const GITHUB_URL ="https://github.com/nuls-io/nulsai-id"
+export const TW_URL ="https://x.com/TDC_Chain"
+export const TG_URL ="https://t.me/TridentChain_EN"
+export const DC_URL ="https://discord.com/invite/KcKMrG36ws"
+export const GITHUB_URL ="https://github.com/TridentChain/TridentChain"
 //默认头像
 export const DEFAULT_AVATAR = 'https://nuls-cf.oss-us-west-1.aliyuncs.com/icon/NULS.png'
 

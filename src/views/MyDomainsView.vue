@@ -1,15 +1,16 @@
 <template>
-  <div class="my-identity">
+  <div class="my-nodes">
     <div class="container">
       <div class="page-header">
-        <h1>My Identity</h1>
+        <h1>My Nodes</h1>
         <router-link to="/" class="cyber-button">
           <PlusIcon class="btn-icon" />
-          Register New Identity
+          Register New Node
         </router-link>
       </div>
 
       <!-- 有域名时显示 -->
+      <template v-if="domains.length">  
         <RewardsStats
           :total-rewards="totalRewards"
           :total-rewards-usd="totalRewardsUsd"
@@ -17,7 +18,16 @@
           :unclaimed-rewards-usd="unclaimedRewardsUsd"
           @claim-rewards="claimAllRewards"
         />
-      <template v-if="domains.length">  
+        
+        <!-- TDC Rewards Section -->
+        <TdcRewardsStats
+          :total-rewards="tdcTotalRewards"
+          :total-rewards-usd="tdcTotalRewardsUsd"
+          :unclaimed-rewards="tdcUnclaimedRewards"
+          :unclaimed-rewards-usd="tdcUnclaimedRewardsUsd"
+          @claim-rewards="claimAllTdcRewards"
+        />
+        
         <DomainsList
           :domains="domains"
           @transfer="transferDomain"
@@ -29,13 +39,13 @@
       <!-- 无域名时显示 -->
       <div v-else class="no-domains">
         <div class="empty-state-icon">
-          <DocumentPlusIcon class="icon" />
+          <ServerIcon class="icon" />
         </div>
-        <h2>No Digital Identity Found</h2>
-        <p>You don't own any digital identity yet. Start by registering your first one!</p>
+        <h2>No AI Nodes Found</h2>
+        <p>You don't own any AI nodes yet. Start by registering your first one!</p>
         <router-link to="/" class="cyber-button">
           <PlusIcon class="btn-icon" />
-          Register Identity
+          Register Node
         </router-link>
       </div>
     </div>
@@ -50,17 +60,17 @@
 </template>
 
 <script setup>
-import '../styles/MyDomainsView.css'
-import { ref, inject,getCurrentInstance, onMounted } from 'vue'
+import { ref, inject, getCurrentInstance, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useWalletStore } from '../stores/wallet'
-import { PlusIcon, DocumentPlusIcon } from '@heroicons/vue/24/outline'
+import { PlusIcon, ServerIcon } from '@heroicons/vue/24/outline'
 import RewardsStats from '../components/RewardsStats.vue'
+import TdcRewardsStats from '../components/TdcRewardsStats.vue'
 import DomainsList from '../components/DomainsList.vue'
 import TransferModal from '../components/TransferModal.vue'
 
 const walletStore = useWalletStore()
-const { currentChainConfig, account,accountPub,domains,totalRewards,totalRewardsUsd,unclaimedRewards,unclaimedRewardsUsd} = storeToRefs(walletStore)
+const { currentChainConfig, account, accountPub, domains, totalRewards, totalRewardsUsd, unclaimedRewards, unclaimedRewardsUsd } = storeToRefs(walletStore)
 const loading = inject('loading')
 const toast = inject('toast')
 // 获取全局配置
@@ -69,22 +79,41 @@ const suffix = proxy.$config.SUFFIX;//后缀
 const showTransferModal = ref(false)
 const selectedDomain = ref(null)
 
+// TDC Rewards data
+const tdcTotalRewards = ref('1000')
+const tdcTotalRewardsUsd = ref('$100.00')
+const tdcUnclaimedRewards = ref('1000')
+const tdcUnclaimedRewardsUsd = ref('$100.00')
+
 onMounted(async () => {
   if (account.value) {
     await walletStore.loadDomains()
     await walletStore.loadRewards()
-  }else{
-    setTimeout(()=>{
+    // Here you would load TDC rewards data
+    loadTdcRewards()
+  } else {
+    setTimeout(() => {
       walletStore.loadDomains()
       walletStore.loadRewards()
-    },3000)
+      loadTdcRewards()
+    }, 3000)
   }
 })
+
+// Load TDC rewards data
+const loadTdcRewards = async () => {
+  // This would be replaced with actual API call to get TDC rewards
+  // For now, we're using static values
+  tdcTotalRewards.value = '1000'
+  tdcTotalRewardsUsd.value = '$100.00'
+  tdcUnclaimedRewards.value = '1000'
+  tdcUnclaimedRewardsUsd.value = '$100.00'
+}
 
 // 领取所有奖励
 const claimAllRewards = async () => {
   try {
-    loading.show('Claiming rewards...')
+    loading.show('Claiming NULS rewards...')
     const data = {
       from: account.value,
       value: 0,
@@ -94,11 +123,32 @@ const claimAllRewards = async () => {
     }
     const result = await walletStore.contractCall(data)
     //console.log('claimAllRewards result',result)
-    toast.show('Rewards claimed successfully', 'success')
+    toast.show('NULS rewards claimed successfully', 'success')
     await walletStore.loadRewards()
   } catch (error) {
     console.error('Failed to claim rewards:', JSON.stringify(error))
-    toast.show('Failed to claim rewards', 'error')
+    toast.show('Failed to claim NULS rewards', 'error')
+  } finally {
+    loading.hide()
+  }
+}
+
+// 领取所有TDC奖励
+const claimAllTdcRewards = async () => {
+  try {
+    loading.show('Claiming TDC rewards...')
+    // This would be replaced with actual contract call to claim TDC rewards
+    // Simulating API call delay
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    
+    // Update TDC rewards after claiming
+    tdcUnclaimedRewards.value = '0'
+    tdcUnclaimedRewardsUsd.value = '$0.00'
+    
+    toast.show('TDC rewards claimed successfully', 'success')
+  } catch (error) {
+    console.error('Failed to claim TDC rewards:', error)
+    toast.show('Failed to claim TDC rewards', 'error')
   } finally {
     loading.hide()
   }
@@ -113,7 +163,7 @@ const transferDomain = (domain) => {
 // 处理转移
 const handleTransfer = async ({ domain, recipient }) => {
   try {
-    loading.show('Transferring domain...')
+    loading.show('Transferring node...')
     //console.log('domain, recipient',{ domain, recipient })
     let recipientAddress = recipient;//接收者地址
     //获取域名ID
@@ -137,7 +187,7 @@ const handleTransfer = async ({ domain, recipient }) => {
       })
       //console.log('userAddress:',userAddress)
       if(!userAddress.result) {
-        toast.show('The AI Identity does not exist', 'error')
+        toast.show('The AI Node does not exist', 'error')
         return;
       }
       const [domaainAddress] = JSON.parse(userAddress.result)
@@ -155,11 +205,11 @@ const handleTransfer = async ({ domain, recipient }) => {
       args: [from,recipientAddress,tokenId]
     }
     await walletStore.contractCall(data)
-    toast.show('Domain transferred successfully', 'success')
+    toast.show('Node transferred successfully', 'success')
     await walletStore.loadDomains()
   } catch (error) {
     console.error('Transfer failed:', error)
-    toast.show('Failed to transfer domain', 'error')
+    toast.show('Failed to transfer node', 'error')
   } finally {
     loading.hide()
   }
@@ -168,7 +218,7 @@ const handleTransfer = async ({ domain, recipient }) => {
 // 设置主域名
 const setPrimaryIdentity = async (domain) => {
   try {
-    loading.show('Setting primary identity...')
+    loading.show('Setting primary node...')
     const data = {
       from: account.value,
       value: 0,
@@ -179,11 +229,11 @@ const setPrimaryIdentity = async (domain) => {
     }
     const resSetPrimaryIdentity = await walletStore.contractCall(data)
     //console.log('resSetPrimaryIdentity:',resSetPrimaryIdentity)
-    toast.show('Primary identity updated', 'success')
+    toast.show('Primary node updated', 'success')
     await walletStore.loadDomains()
   } catch (error) {
-    console.error('Failed to set primary identity:', error)
-    toast.show('Failed to set primary identity', 'error')
+    console.error('Failed to set primary node:', error)
+    toast.show('Failed to set primary node', 'error')
   } finally {
     loading.hide()
   }
@@ -221,3 +271,144 @@ const toggleRewards = async (domain) => {
   }
 }
 </script>
+
+<style scoped>
+.my-nodes {
+  padding-top: 80px;
+  min-height: 100vh;
+  background: var(--bg-dark);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  color: white;
+  font-size: 2rem;
+  margin: 0;
+}
+
+.cyber-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.cyber-button:hover {
+  box-shadow: 0 4px 12px rgba(0, 194, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Empty State Styles */
+.no-domains {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+}
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 2rem;
+  background: rgba(0, 194, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.empty-state-icon::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    var(--primary),
+    transparent
+  );
+  animation: rotate 4s linear infinite;
+}
+
+.empty-state-icon .icon {
+  width: 40px;
+  height: 40px;
+  color: var(--primary);
+  position: relative;
+  z-index: 1;
+}
+
+.no-domains h2 {
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.no-domains p {
+  color: var(--text);
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .cyber-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .no-domains {
+    padding: 2rem 1rem;
+  }
+}
+</style>

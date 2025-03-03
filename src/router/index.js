@@ -6,6 +6,7 @@ import AITrainingView from '../views/AITrainingView.vue'
 import AINodesView from '../views/AINodesView.vue'
 import AboutView from '../views/AboutView.vue'
 import ReferralView from '../views/ReferralView.vue'
+import WithdrawalManagementView from '../views/WithdrawalManagementView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -16,8 +17,8 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/my-identity',
-      name: 'my-identity',
+      path: '/my-nodes',
+      name: 'my-nodes',
       component: MyDomainsView
     },
     {
@@ -44,6 +45,11 @@ const router = createRouter({
       path: '/referral',
       name: 'referral',
       component: ReferralView
+    },
+    {
+      path: '/withdrawal',
+      name: 'withdrawal',
+      component: WithdrawalManagementView
     }
   ]
 })

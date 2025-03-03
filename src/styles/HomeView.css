@@ -2,7 +2,6 @@
 .home {
   min-height: 100vh;
   background: var(--bg-dark);
-  padding-top: 70px;
   overflow: hidden;
 }
 

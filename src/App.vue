@@ -158,12 +158,17 @@ const handleErrorAction = () => {
 
 <style>
 :root {
-  --primary: #00e789;
-  --primary-dark: #00cc76;
-  --bg-dark: #0a0b0e;
+  --primary: #00c2ff;
+  --primary-dark: #0099cc;
+  --bg-dark: #0a0e17;
   --text: rgba(255, 255, 255, 0.7);
   --header-height: 70px;
   --container-padding: clamp(1rem, 5vw, 2rem);
+  --accent-color: #ff5e3a;
+  --gradient-primary: linear-gradient(135deg, #00c2ff 0%, #0066ff 100%);
+  --gradient-accent: linear-gradient(135deg, #ff5e3a 0%, #ff3a6b 100%);
+  --card-bg: rgba(20, 30, 48, 0.5);
+  --border-color: rgba(0, 194, 255, 0.2);
 }
 
 * {
@@ -188,6 +193,7 @@ body {
   overflow-x: hidden;
   min-height: 100vh;
   min-height: -webkit-fill-available;
+  background-image: radial-gradient(circle at 50% 0%, rgba(0, 194, 255, 0.1) 0%, transparent 70%);
 }
 
 .app {
@@ -243,7 +249,7 @@ body {
 }
 
 .cyber-button.primary {
-  background: var(--primary);
+  background: var(--gradient-primary);
   color: white;
   border: none;
 }
@@ -258,7 +264,7 @@ body {
 }
 
 .cyber-button.primary:hover {
-  background: var(--primary-dark);
+  box-shadow: 0 4px 12px rgba(0, 194, 255, 0.3);
 }
 
 ::-webkit-scrollbar {

@@ -1,33 +1,33 @@
-# NULS AI - Digital Identity Protocol
+# ChainVerse - AI Node Protocol
 
-NULS AI is a revolutionary digital identity protocol built on the NULS blockchain that combines AI capabilities with digital identity management, offering users a unique way to establish their digital presence while earning passive income.
+ChainVerse is a revolutionary AI node protocol built on the NULS blockchain that combines AI capabilities with decentralized node management, offering users a unique way to participate in the AI network while earning passive income.
 
 ## Features
 
-### Digital Identity Management
-- Register and manage your unique `.nuls` digital identity
-- Set primary identity for your account
-- Transfer identities to other users
+### AI Node Network
+- Register and manage your unique `.nuls` AI nodes
+- Set primary node for your account
+- Transfer nodes to other users
 - Permanent ownership with no renewal fees
 
 ### Passive Income Generation
-- Earn NULS rewards by holding digital identities
+- Earn NULS rewards by operating AI nodes
 - Activate/deactivate reward mechanisms
 - Track total and unclaimed rewards
 - Claim rewards anytime
 
 ### Profile Management
-- Customize your digital identity profile
+- Customize your node operator profile
 - Upload avatar images
 - Add social media links
 - Share personal websites
 - Set location and description
 
 ### AI Integration (Coming Soon)
-- Train your digital identity AI
+- Train your AI nodes
 - Enhance AI knowledge base
 - Monetize AI capabilities
-- Collaborate through AI identities
+- Collaborate through AI nodes
 
 ## Getting Started
 
@@ -48,16 +48,16 @@ The project supports different environments:
 
 ```bash
 # Mainnet
-VITE_APP_TITLE=NULS AI
+VITE_APP_TITLE=ChainVerse
 VITE_APP_ENV=mainnet
-VITE_APP_API_URL=https://api.nuls.ai
+VITE_APP_API_URL=https://api.chainverse.io
 VITE_APP_CHAIN_ID=1
 VITE_APP_EXPLORER_URL=https://nulscan.io
 
 # Testnet
-VITE_APP_TITLE=NULS AI - Testnet
+VITE_APP_TITLE=ChainVerse - Testnet
 VITE_APP_ENV=testnet
-VITE_APP_API_URL=https://beta.api.nuls.ai
+VITE_APP_API_URL=https://beta.api.chainverse.io
 VITE_APP_CHAIN_ID=2
 VITE_APP_EXPLORER_URL=https://beta.nulscan.io
 ```
@@ -73,10 +73,10 @@ import { walletService } from '../services/wallet'
 await walletService.connect()
 ```
 
-### Register Identity
+### Register Node
 ```javascript
-// Register a new digital identity
-const domain = 'mydomain.nuls'
+// Register a new AI node
+const domain = 'mynode.nuls'
 await walletStore.contractCall({
   contractAddress: currentChainConfig.contracts.domainAddress,
   methodName: "mint",

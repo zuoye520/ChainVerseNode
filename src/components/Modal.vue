@@ -88,7 +88,7 @@ const handleOverlayClick = () => {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(10, 11, 14, 0.8);
+  background: rgba(10, 14, 23, 0.8);
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
@@ -99,12 +99,12 @@ const handleOverlayClick = () => {
 
 .modal-container {
   position: relative;
-  background: var(--bg-dark);
+  background: var(--card-bg);
   border-radius: 16px;
   width: 100%;
   max-height: 90vh;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
 }
 
 .modal-container.small {

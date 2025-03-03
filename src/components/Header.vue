@@ -4,10 +4,10 @@
       <router-link to="/" class="logo">
         <div class="logo-wrapper">
           <div class="logo-text">
-            <span class="nuls">NULS</span>
-            <div class="ai-container">
-              <span class="ai">AI</span>
-              <div class="ai-effects">
+            <span class="chain">Chain</span>
+            <div class="verse-container">
+              <span class="verse">Verse</span>
+              <div class="verse-effects">
                 <div class="circuit-lines"></div>
                 <div class="pulse"></div>
                 <div class="glow"></div>
@@ -18,7 +18,7 @@
         </div>
       </router-link>
       <div class="nav-links" :class="{ 'active': isMenuOpen }">
-        <router-link to="/my-identity" @click="closeMenu">My Identity</router-link>
+        <router-link to="/my-nodes" @click="closeMenu">My Nodes</router-link>
         <router-link to="/ai-training" @click="closeMenu">AI Training</router-link>
         <!-- <router-link to="/ai-nodes" @click="closeMenu">AI Nodes</router-link> -->
       </div>
@@ -30,13 +30,20 @@
         <div v-show="showSocialMenu" class="social-menu" @click.stop>
           <div class="menu-section">
             <h4 class="section-title">Help & Support</h4>
-            <router-link to="/about" class="menu-item" @click="toggleSocialMenu">
+            <!-- <router-link to="/about" class="menu-item" @click="toggleSocialMenu">
               <BookOpenIcon class="menu-icon" />
               <div class="menu-item-content">
                 <span class="menu-item-title">About</span>
-                <span class="menu-item-description">Learn more about NULS AI</span>
+                <span class="menu-item-description">Learn more about ChainVerse</span>
               </div>
-            </router-link>
+            </router-link> -->
+            <a href="https://www.gitbook.com/" target="_blank" class="menu-item" @click="toggleSocialMenu">
+              <BookOpenIcon class="menu-icon" />
+              <div class="menu-item-content">
+                <span class="menu-item-title">About</span>
+                <span class="menu-item-description">Learn more about ChainVerse</span>
+              </div>
+            </a>
           </div>
           <div class="menu-section">
             <h4 class="section-title">Community</h4>
@@ -114,10 +121,10 @@ onUnmounted(() => {
 
 <style scoped>
 .header {
-  background: rgba(10, 11, 14, 0.8);
+  background: rgba(10, 14, 23, 0.8);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 194, 255, 0.1);
   position: fixed;
   width: 100%;
   top: 0;
@@ -158,7 +165,7 @@ onUnmounted(() => {
   position: relative;
 }
 
-.nuls {
+.chain {
   background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -167,25 +174,25 @@ onUnmounted(() => {
   position: relative;
 }
 
-.ai-container {
+.verse-container {
   position: relative;
   height: 2rem;
-  width: 2.5rem;
+  width: 4rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.ai {
+.verse {
   color: var(--primary);
   font-size: 0.9em;
   position: relative;
   z-index: 2;
-  text-shadow: 0 0 10px rgba(0, 228, 134, 0.5);
+  text-shadow: 0 0 10px rgba(0, 194, 255, 0.5);
   animation: pulse 2s infinite;
 }
 
-.ai-effects {
+.verse-effects {
   position: absolute;
   inset: -0.25rem;
   pointer-events: none;
@@ -309,10 +316,10 @@ onUnmounted(() => {
   top: 100%;
   right: 0;
   margin-top: 0.5rem;
-  background: rgba(10, 11, 14, 0.95);
+  background: rgba(10, 14, 23, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 194, 255, 0.1);
   border-radius: 12px;
   width: 280px;
   overflow: hidden;
@@ -522,14 +529,14 @@ onUnmounted(() => {
     top: 70px;
     left: 0;
     right: 0;
-    background: rgba(10, 11, 14, 0.95);
+    background: rgba(10, 14, 23, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     padding: 1rem;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(0, 194, 255, 0.1);
     height: calc(100vh - var(--header-height));
   }
 
@@ -570,9 +577,9 @@ onUnmounted(() => {
     }
   }
 
-  .ai-container {
+  .verse-container {
     height: 1.75rem;
-    width: 2.25rem;
+    width: 3.5rem;
   }
 }
 

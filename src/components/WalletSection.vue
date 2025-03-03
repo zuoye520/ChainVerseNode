@@ -63,6 +63,18 @@
                 </div>
               </button>
             </router-link>
+          
+          <!--
+            <router-link to="/withdrawal" custom v-slot="{ navigate }">
+              <button class="menu-item" @click="goToWithdrawal(navigate)">
+                <BanknotesIcon class="menu-icon" />
+                <div class="menu-item-content">
+                  <span class="menu-item-title">Withdrawal Management</span>
+                  <span class="menu-item-description">Manage your TDC withdrawals</span>
+                </div>
+              </button>
+            </router-link>
+          -->
           </div>
 
           <div class="menu-section">
@@ -100,7 +112,8 @@ import {
   DocumentDuplicateIcon,
   ArrowTopRightOnSquareIcon,
   ChevronDownIcon,
-  UserGroupIcon
+  UserGroupIcon,
+  BanknotesIcon
 } from '@heroicons/vue/24/outline'
 import { WalletIcon } from '@heroicons/vue/24/solid'
 
@@ -168,6 +181,11 @@ function goToReferral(navigate) {
   navigate()
 }
 
+function goToWithdrawal(navigate) {
+  showWalletMenu.value = false
+  navigate()
+}
+
 function handleClickOutside(event) {
   if (showWalletMenu.value && !event.target.closest('.wallet-section')) {
     showWalletMenu.value = false
@@ -187,7 +205,7 @@ function toggleWalletMenu() {
 
 .cyber-button {
   position: relative;
-  background: var(--primary);
+  background: var(--gradient-primary);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -202,7 +220,7 @@ function toggleWalletMenu() {
 }
 
 .cyber-button:hover {
-  background: var(--primary-dark);
+  box-shadow: 0 4px 12px rgba(0, 194, 255, 0.3);
   transform: translateY(-1px);
 }
 
@@ -241,7 +259,7 @@ function toggleWalletMenu() {
   align-items: center;
   gap: 0.5rem;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -276,13 +294,13 @@ function toggleWalletMenu() {
   top: 100%;
   right: 0;
   margin-top: 0.5rem;
-  background: rgba(10, 11, 14, 0.95);
+  background: rgba(10, 14, 23, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 12px;
   width: 320px;
   overflow: hidden;
   animation: slideDown 0.2s ease-out;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   z-index: 1000;
 }
 
@@ -472,7 +490,7 @@ function toggleWalletMenu() {
   height: 8px;
   background: var(--primary);
   border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(0, 228, 134, 0.2);
+  box-shadow: 0 0 0 2px rgba(0, 194, 255, 0.2);
 }
 
 @keyframes slideDown {

@@ -83,7 +83,7 @@ const toastIcon = computed(() => {
 }
 
 .toast-success {
-  background: rgba(0, 228, 134, 0.9);
+  background: rgba(0, 194, 255, 0.9);
 }
 
 .toast-error {

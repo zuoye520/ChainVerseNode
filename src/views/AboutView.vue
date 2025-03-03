@@ -3,14 +3,14 @@
     <div class="hero-section">
       <div class="hero-content">
         <div class="ai-circle">
-          <SparklesIcon class="hero-icon" />
+          <ServerIcon class="hero-icon" />
           <div class="circle-effects">
             <div class="rotating-border"></div>
             <div class="glowing-orb"></div>
           </div>
         </div>
-        <h1>What is NULS AI?</h1>
-        <p class="hero-text">NULS AI is an artificial intelligence digital identity protocol that not only provides you with a unique digital identity but also generates passive income through our innovative reward mechanism. The AI digital identity can also automatically train and evolve in the future.</p>
+        <h1>What is ChainVerse?</h1>
+        <p class="hero-text">ChainVerse is a decentralized AI node protocol that not only provides you with a unique AI node identity but also generates passive income through our innovative reward mechanism. The AI nodes can also automatically train and evolve in the future.</p>
       </div>
       <div class="hero-background">
         <div class="circuit-pattern"></div>
@@ -50,8 +50,7 @@
 import { getCurrentInstance } from 'vue'
 const { proxy } = getCurrentInstance()
 import { 
-  SparklesIcon, 
-  UserCircleIcon,
+  ServerIcon, 
   CurrencyDollarIcon,
   GiftIcon,
   CubeTransparentIcon,
@@ -60,39 +59,34 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const faqs = [
-  // {
-  //   question: "What is NULS AI Digital Identity?",
-  //   answer: "NULS AI digital identity allows you to earn rewards while owning your digital identity. You can transfer assets and value through digital identity in the NULS ecosystem, and enjoy the benefits of AI training evolution in the future.",
-  //   icon: UserCircleIcon
-  // },
   {
-    question: "How much does NULS AI Digital Identity registration cost?",
-    answer: "AI digital identity pricing is based on name length - different lengths have different prices. Once registered, it can be used permanently with no time limit.",
+    question: "How much does ChainVerse AI Node registration cost?",
+    answer: "AI node pricing is based on name length - different lengths have different prices. Once registered, it can be used permanently with no time limit.",
     icon: CurrencyDollarIcon
   },
   {
-    question: "Where does NULS AI's passive income come from?",
-    answer: "80% of the NULS AI digital identity registration fee will be pledged to the NULS node and locked permanently.",
+    question: "Where does ChainVerse's passive income come from?",
+    answer: "80% of the ChainVerse AI node registration fee will be pledged to the NULS node and locked permanently.",
     icon: CurrencyDollarIcon
   },
   {
-    question: "How can I get free or discounted NULS AI Digital Identity?",
+    question: "How can I get free or discounted ChainVerse AI Nodes?",
     answer: "Through airdrops or as NULS ecosystem builders.",
     icon: GiftIcon
   },
   {
-    question: "How do I use NULS AI Digital Identity?",
-    answer: "You can use your AI digital identity in various applications within the NULS ecosystem.",
+    question: "How do I use ChainVerse AI Nodes?",
+    answer: "You can use your AI nodes in various applications within the NULS ecosystem.",
     icon: CubeTransparentIcon
   },
   {
     question: "Will my profile information be published on-chain?",
-    answer: "NULS AI digital identity is completely on-chain, so any information you publish will be recorded on-chain, requires transactions, and can be widely combined with other parts of the ecosystem. Please do not publish any information you don't want on-chain.",
+    answer: "ChainVerse AI nodes are completely on-chain, so any information you publish will be recorded on-chain, requires transactions, and can be widely combined with other parts of the ecosystem. Please do not publish any information you don't want on-chain.",
     icon: ShieldCheckIcon
   },
   {
-    question: "I'm a developer. How do I integrate NULS AI Digital Identity into my application?",
-    answer: "If you're a developer looking to integrate NULS AI into your application, the documentation is the easiest way to get started.",
+    question: "I'm a developer. How do I integrate ChainVerse AI Nodes into my application?",
+    answer: "If you're a developer looking to integrate ChainVerse into your application, the documentation is the easiest way to get started.",
     icon: CodeBracketIcon,
     link: proxy.$config.GITHUB_URL,
     linkText: "View Documentation"
@@ -169,7 +163,7 @@ const faqs = [
   border-radius: 50%;
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(0, 228, 134, 0.2) 0%,
+    rgba(0, 194, 255, 0.2) 0%,
     transparent 70%
   );
   animation: pulse 2s ease-in-out infinite;
@@ -185,8 +179,8 @@ const faqs = [
   position: absolute;
   inset: 0;
   background-image: 
-    linear-gradient(to right, rgba(0, 228, 134, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 228, 134, 0.1) 1px, transparent 1px);
+    linear-gradient(to right, rgba(0, 194, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 194, 255, 0.1) 1px, transparent 1px);
   background-size: 30px 30px;
   transform: perspective(500px) rotateX(60deg);
   animation: circuit 20s linear infinite;
@@ -197,7 +191,7 @@ const faqs = [
   inset: 0;
   background: radial-gradient(
     circle at center,
-    rgba(0, 228, 134, 0.1) 0%,
+    rgba(0, 194, 255, 0.1) 0%,
     transparent 70%
   );
   filter: blur(50px);
@@ -246,8 +240,8 @@ h2 {
 }
 
 .faq-item {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 2rem;
   transition: all 0.3s;
@@ -260,13 +254,13 @@ h2 {
   border-color: var(--primary);
   box-shadow: 
     0 10px 20px rgba(0, 0, 0, 0.2),
-    0 0 20px rgba(0, 228, 134, 0.2);
+    0 0 20px rgba(0, 194, 255, 0.2);
 }
 
 .faq-icon {
   width: 48px;
   height: 48px;
-  background: rgba(0, 228, 134, 0.1);
+  background: rgba(0, 194, 255, 0.1);
   border-radius: 12px;
   display: flex;
   align-items: center;
