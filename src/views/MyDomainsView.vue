@@ -106,7 +106,7 @@ onMounted(async () => {
     if (account.value) {
       loadTdcRewards()  
     }
-    }, 3000);
+    }, 5000);
 })
 
 // Load TDC rewards data
@@ -130,6 +130,7 @@ const loadTdcRewards = async () => {
     const result = await walletStore.invokeView(data)
     //console.log('TDC stake info:', result)
     const [depositInfo,unclaimedRewards,balanceOf] = JSON.parse(result.result)
+    if(!depositInfo) return;
     //console.log('depositInfo:',depositInfo)
     const {received,amount} = JSON.parse(depositInfo)
     // //console.log('received:',received)
