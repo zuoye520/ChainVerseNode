@@ -101,23 +101,33 @@ const airdropNum = ref(0)
 const searchQuery = ref('')
 const searchResults = ref([])
 const showModal = ref(false)
+
+
+//首页统计数据
+const tdcTotalRewards = ref(0) //tdc总产出
+const tdcDayRewards = ref(8640 * 8.5)//tdc 日产出
+const nulsTotalRewards = ref(0) //nuls总产出
+const nulsDayRewards = ref(0) //nuls日产出
+const nodeTotal = ref(0) //节点总数
+  
+
 onBeforeMount(() => {
-  //console.log('Component will be mounted')
+  ////console.log('Component will be mounted')
   initializeData()
 })
 
 onMounted(() => {
-  //console.log('Component mounted')
+  ////console.log('Component mounted')
   window.addEventListener('resize', handleResize)
   setupCircuitAnimation()
 })
 
 onUpdated(() => {
-  //console.log('Component updated')
+  ////console.log('Component updated')
 })
 
 onUnmounted(() => {
-  //console.log('Component will be unmounted')
+  ////console.log('Component will be unmounted')
   window.removeEventListener('resize', handleResize)
 })
 
@@ -129,7 +139,7 @@ const initializeData = () => {
 }
 
 const handleResize = () => {
-  //console.log('Window resized')
+  ////console.log('Window resized')
 }
 
 const setupCircuitAnimation = () => {
@@ -138,7 +148,6 @@ const setupCircuitAnimation = () => {
     // Add animation logic
   }
 }
-
 
 const validateDomain = (event) => {
   // 获取用户输入的值
@@ -151,7 +160,7 @@ const validateDomain = (event) => {
 
 const searchDomain = async() => {
   
-  //console.log('currentChainConfig:',currentChainConfig)
+  ////console.log('currentChainConfig:',currentChainConfig)
   try {
     
   
@@ -171,7 +180,7 @@ const searchDomain = async() => {
       methodDesc: "",
       args: [account.value],
   })
-  //console.log('userHistoryQuota:',quota)
+  ////console.log('userHistoryQuota:',quota)
   airdropNum.value = quota.result*1
 
 
@@ -197,7 +206,7 @@ const searchDomain = async() => {
   }
   let {result} = await walletStore.invokeView(data)
   result = JSON.parse(result)
-  // //console.log('results:',result)
+  //console.log('results:',result)
   const list = []
   for (let index = 0; index < 3; index++) {
     const item = JSON.parse(result[index])
@@ -214,7 +223,7 @@ const searchDomain = async() => {
   } catch (error) {
     console.error('error:',error)
   } finally{
-    // console.log('finally')
+    // //console.log('finally')
   }
 }
 const registerDomain = async(domain)=>{
@@ -226,7 +235,7 @@ const registerDomain = async(domain)=>{
         contractAddress: currentChainConfig.value.contracts.domainAddress,
         methodName: "mint",
         methodDesc: "",
-        args: [domain.name,accountPub.value],
+        args: [domain.name,accountPub.value,""],
         multyAssetValues: []
     }
     const suffix = "."+proxy.$config.SUFFIX[0];//后缀

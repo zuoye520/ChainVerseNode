@@ -107,14 +107,14 @@ const { account, currentChainConfig } = storeToRefs(store)
 
   // 监听页码变化
 watch(account, (newAccount) => {
-  console.log('account:',account.value,newAccount)
+  //console.log('account:',account.value,newAccount)
   // 加载新页数据
   if(newAccount) initData()
   
 })
 // 监听页码变化
 watch(currentPage, (newPage) => {
-  console.log('newPage:',newPage)
+  //console.log('newPage:',newPage)
   // 加载新页数据
   initData(newPage)
 })
@@ -131,7 +131,7 @@ watch(currentPage, (newPage) => {
   const handleWithdraw = async () => {
   try {
     const result = await referStore.withdraw(account.value)
-    console.log('result:',result)
+    //console.log('result:',result)
     toast.show('Withdrawing rewards', 'success')
   } catch (error) {
     toast.show(error.msg || error, 'error')
@@ -140,7 +140,7 @@ watch(currentPage, (newPage) => {
 }
 
   const initData = async ()=>{
-    console.log('account',account)
+    //console.log('account',account)
     if(account.value){
       await referStore.getReferInfo({
         address:account.value

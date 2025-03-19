@@ -20,7 +20,7 @@
         <div class="stats-content">
           <div class="stats-value">
             {{ totalRewards.nuls }} <span class="currency">NULS</span>
-            <span class="plus">+</span>
+            <p class="plus">+</p>
             {{ totalRewards.tdc }} <span class="currency">TDC</span>
           </div>
           <div class="stats-label">Total Rewards Generated</div>
@@ -35,7 +35,7 @@
         <div class="stats-content">
           <div class="stats-value">
             {{ dailyRewards.nuls }} <span class="currency">NULS</span>
-            <span class="plus">+</span>
+            <p class="plus">+</p>
             {{ dailyRewards.tdc }} <span class="currency">TDC</span>
           </div>
           <div class="stats-label">Daily Rewards</div>
@@ -46,18 +46,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted,getCurrentInstance } from 'vue'
+import { storeToRefs } from 'pinia'
 import { ServerIcon, CurrencyDollarIcon, ChartBarIcon } from '@heroicons/vue/24/outline'
+import { useWalletStore } from '../stores/wallet'
+const walletStore = useWalletStore()
 
+// 获取全局配置
+const { proxy } = getCurrentInstance()
+const currentChainConfig = proxy.$config.CURRENT_NETWORK
+const chainId = proxy.$config.CHAIN_ID
 // These would be replaced with actual API calls in production
-const totalNodes = ref('2,458')
+const totalNodes = ref('0')
 const totalRewards = ref({
-  nuls: '1,245,678',
-  tdc: '3,567,890'
+  nuls: '0',
+  tdc: '0'
 })
 const dailyRewards = ref({
-  nuls: '5,432',
-  tdc: '12,345'
+  nuls: '0',
+  tdc: '0'
 })
 
 onMounted(() => {
@@ -65,24 +72,41 @@ onMounted(() => {
   fetchNodeStats()
 })
 
-const fetchNodeStats = async () => {
-  // This would be replaced with an actual API call
-  // For now, we're using static values
+const fetchNodeStats =async () =>{
   
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 500))
-  
-  // Update with mock data (would be real data from API)
-  totalNodes.value = '2,458'
-  totalRewards.value = {
-    nuls: '1,245,678',
-    tdc: '3,567,890'
+  //查询节点数量
+  const {totalCount} = await walletStore.api.pcInvokeView('getContractToken721s',[chainId,1,1,currentChainConfig.nrc721Address.tdc])
+  totalNodes.value = totalCount
+  //console.log('totalNodes:',totalNodes.value)
+  //nuls总奖励
+  const resTotalRewards = await walletStore.api.rpcInvokeView('invokeView',[chainId, currentChainConfig.contracts.stakeAddress, "ownerTotalConsensusAward", null, []])
+  const nulsTotalRewards = resTotalRewards.result
+  //console.log('nulsTotalRewards:',nulsTotalRewards)
+  //查询合约区块高度
+  const {blockHeight:createBlockHeight} = await walletStore.api.pcInvokeView('getContract',[chainId,currentChainConfig.contracts.stakeAddress])
+  //console.log('721 createBlockHeight:',createBlockHeight)
+  //获取当前区块高度
+  const currentBlockHeight = await walletStore.api.rpcInvokeView('getLatestHeight',[chainId])
+  //console.log('currentBlockHeight:',currentBlockHeight)
+  const tdcTotalRewards = (currentBlockHeight-createBlockHeight)*8.5
+  //查询NULS日奖励
+
+  const beforeBlockHeight = currentBlockHeight - 8640 //24小时前的区块高度
+  const currentNulsRewards = await walletStore.api.rpcInvokeView('invokeView',[chainId, currentChainConfig.contracts.stakeAddress, "ownerTotalConsensusAward", null, [], currentBlockHeight])
+  const beforeNulsRewards = await walletStore.api.rpcInvokeView('invokeView',[chainId, currentChainConfig.contracts.stakeAddress, "ownerTotalConsensusAward", null, [], beforeBlockHeight])
+  const nulsDayRewards = currentNulsRewards.result - beforeNulsRewards.result
+  //console.log('beforeNulsRewards:',{beforeNulsRewards,currentNulsRewards},nulsDayRewards)
+
+  totalRewards.value ={
+    nuls: nulsTotalRewards,
+    tdc: proxy.$format.formatAmount(tdcTotalRewards,0)
   }
   dailyRewards.value = {
-    nuls: '5,432',
-    tdc: '12,345'
+    nuls: nulsDayRewards,
+    tdc: proxy.$format.formatAmount(8640 * 8.5,0)
   }
 }
+
 </script>
 
 <style scoped>

@@ -43,8 +43,11 @@
         </div>
 
         <div class="wallet-menu-content">
+          <!--
           <div class="menu-section">
+            
             <h4 class="section-title">Account</h4>
+            
             <router-link to="/profile" custom v-slot="{ navigate }">
               <button class="menu-item" @click="goToProfile(navigate)">
                 <UserCircleIcon class="menu-icon" />
@@ -64,7 +67,7 @@
               </button>
             </router-link>
           
-          <!--
+          
             <router-link to="/withdrawal" custom v-slot="{ navigate }">
               <button class="menu-item" @click="goToWithdrawal(navigate)">
                 <BanknotesIcon class="menu-icon" />
@@ -74,9 +77,9 @@
                 </div>
               </button>
             </router-link>
-          -->
+          
           </div>
-
+        -->
           <div class="menu-section">
             <button class="menu-item disconnect" @click="disconnectWallet">
               <ArrowRightOnRectangleIcon class="menu-icon" />

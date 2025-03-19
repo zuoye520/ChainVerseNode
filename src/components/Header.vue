@@ -19,7 +19,8 @@
       </router-link>
       <div class="nav-links" :class="{ 'active': isMenuOpen }">
         <router-link to="/my-nodes" @click="closeMenu">My Nodes</router-link>
-        <router-link to="/ai-training" @click="closeMenu">AI Training</router-link>
+        <!-- <a href="https://www.gitbook.com/" target="_blank" @click="closeMenu">About</a> -->
+        <!-- <router-link to="/ai-training" @click="closeMenu">AI Training</router-link> -->
         <!-- <router-link to="/ai-nodes" @click="closeMenu">AI Nodes</router-link> -->
       </div>
       <div class="right-section">

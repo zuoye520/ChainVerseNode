@@ -24,7 +24,7 @@ class WalletService {
     try {
       // 创建 NULS 网络会话
       this.session = await this.nabox.createSession()
-      //console.log('this.session:',this.session)
+      ////console.log('this.session:',this.session)
       if (!this.session || !this.session[0]) {
         throw new Error('Account not found')
       }
@@ -56,7 +56,7 @@ class WalletService {
   async getPub(accountAddress){
     try {
       const accountPub = await nabox.getPub({address:accountAddress});
-      //console.log('accountPub:',accountPub);
+      ////console.log('accountPub:',accountPub);
       return accountPub;
     } catch (error) {
       console.error('Failed to obtain public key:', error)
@@ -107,7 +107,7 @@ class WalletService {
   onAccountsChanged(callback) {
     if (this.isNaboxInstalled()) {
       this.nabox.on('accountsChanged', (accounts) => {
-        //console.log('accountsChanged:',accounts)
+        ////console.log('accountsChanged:',accounts)
         try {
           if (accounts.length) {
             callback([accounts[0]])
@@ -127,7 +127,7 @@ class WalletService {
     if (this.isNaboxInstalled()) {
       this.nabox.on('chainChanged', (chainId) => {
         try {
-          //console.log('onChainChanged:',chainId)
+          ////console.log('onChainChanged:',chainId)
           const chainInfo = {
             chainId: chainId,
             chainName: this.chainName
@@ -157,7 +157,7 @@ class WalletService {
       return { connected: false, chainId: null, error: 'No wallet installed' }
     }
     try {
-      //console.log('switchChain:',CURRENT_NETWORK.chainId)
+      ////console.log('switchChain:',CURRENT_NETWORK.chainId)
       await this.nabox.switchChain({chainId:CURRENT_NETWORK.chainId})
     } catch (error) {
       console.error(error)

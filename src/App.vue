@@ -136,7 +136,7 @@ watch(error, (newError) => {
 })
 // 监听页码变化
 watch(account, (newAccount) => {
-  console.log('app.vue watch account:',newAccount)
+  //console.log('app.vue watch account:',newAccount)
   // 加载新页数据
   if(newAccount) handelRegister()
   

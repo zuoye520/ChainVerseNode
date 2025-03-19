@@ -21,11 +21,16 @@
         
         <!-- TDC Rewards Section -->
         <TdcRewardsStats
+          :apr="apr"
+          :available-balance="availableBalance"
+          :staked-amount = "stakedAmount"
           :total-rewards="tdcTotalRewards"
           :total-rewards-usd="tdcTotalRewardsUsd"
           :unclaimed-rewards="tdcUnclaimedRewards"
           :unclaimed-rewards-usd="tdcUnclaimedRewardsUsd"
           @claim-rewards="claimAllTdcRewards"
+          @stake="handleTdcStake"
+          @unstake="handleTdcUnstake"
         />
         
         <DomainsList
@@ -79,11 +84,16 @@ const suffix = proxy.$config.SUFFIX;//后缀
 const showTransferModal = ref(false)
 const selectedDomain = ref(null)
 
+// TDC available Balance
+const availableBalance = ref('0')
+const stakedAmount = ref('0')
+const apr = ref('0')
 // TDC Rewards data
 const tdcTotalRewards = ref('1000')
 const tdcTotalRewardsUsd = ref('$100.00')
 const tdcUnclaimedRewards = ref('1000')
 const tdcUnclaimedRewardsUsd = ref('$100.00')
+
 
 onMounted(async () => {
   if (account.value) {
@@ -91,23 +101,52 @@ onMounted(async () => {
     await walletStore.loadRewards()
     // Here you would load TDC rewards data
     loadTdcRewards()
-  } else {
-    setTimeout(() => {
-      walletStore.loadDomains()
-      walletStore.loadRewards()
-      loadTdcRewards()
-    }, 3000)
-  }
+  } 
+  setInterval(() => {
+    if (account.value) {
+      loadTdcRewards()  
+    }
+    }, 3000);
 })
 
 // Load TDC rewards data
 const loadTdcRewards = async () => {
-  // This would be replaced with actual API call to get TDC rewards
-  // For now, we're using static values
-  tdcTotalRewards.value = '1000'
-  tdcTotalRewardsUsd.value = '$100.00'
-  tdcUnclaimedRewards.value = '1000'
-  tdcUnclaimedRewardsUsd.value = '$100.00'
+  try {
+    // loading.show('Loading TDC rewards...')
+    const data = {
+      contractAddress: currentChainConfig.value.toolContractAddress,
+      methodName: "aggregateStrict",
+      args:[
+        [
+        currentChainConfig.value.contracts.stakeAddress,
+        currentChainConfig.value.contracts.stakeAddress,
+        currentChainConfig.value.tdcTokenAddress,
+        ],
+        ['getDepositInfo','pendingToken','balanceOf'],
+        [account.value,account.value,account.value],
+        false
+      ],
+    }
+    const result = await walletStore.invokeView(data)
+    //console.log('TDC stake info:', result)
+    const [depositInfo,unclaimedRewards,balanceOf] = JSON.parse(result.result)
+    //console.log('depositInfo:',depositInfo)
+    const {received,amount} = JSON.parse(depositInfo)
+    // //console.log('received:',received)
+    // Update TDC rewards state
+    tdcTotalRewards.value = proxy.$format.fromAmount(unclaimedRewards*1+received*1) 
+    tdcTotalRewardsUsd.value = '$100.00'
+    tdcUnclaimedRewards.value = proxy.$format.fromAmount(unclaimedRewards)
+    tdcUnclaimedRewardsUsd.value = '$100.00'
+    availableBalance.value = proxy.$format.fromAmount(balanceOf) 
+    stakedAmount.value = proxy.$format.fromAmount(amount) 
+    apr.value = (100 * (8.5 * 6 * 60 * 24 * 365) / stakedAmount.value).toFixed(1)
+  } catch (error) {
+    console.error('Failed to load TDC rewards:', error)
+    toast.show('Failed to load TDC rewards', 'error')
+  } finally {
+    // loading.hide()
+  }
 }
 
 // 领取所有奖励
@@ -118,15 +157,13 @@ const claimAllRewards = async () => {
       from: account.value,
       value: 0,
       contractAddress: currentChainConfig.value.contracts.domainAddress,
-      methodName: "receiveAward",
-      methodDesc: "",
+      methodName: "receiveAwards",
     }
     const result = await walletStore.contractCall(data)
-    //console.log('claimAllRewards result',result)
     toast.show('NULS rewards claimed successfully', 'success')
     await walletStore.loadRewards()
   } catch (error) {
-    console.error('Failed to claim rewards:', JSON.stringify(error))
+    console.error('Failed to claim rewards:', error)
     toast.show('Failed to claim NULS rewards', 'error')
   } finally {
     loading.hide()
@@ -137,18 +174,80 @@ const claimAllRewards = async () => {
 const claimAllTdcRewards = async () => {
   try {
     loading.show('Claiming TDC rewards...')
-    // This would be replaced with actual contract call to claim TDC rewards
-    // Simulating API call delay
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    // Update TDC rewards after claiming
-    tdcUnclaimedRewards.value = '0'
-    tdcUnclaimedRewardsUsd.value = '$0.00'
-    
+    const data = {
+      from: account.value,
+      value: 0,
+      contractAddress: currentChainConfig.value.contracts.stakeAddress,
+      methodName: "receiveAwards",
+      args: [0]
+      
+    }
+    await walletStore.contractCall(data)
     toast.show('TDC rewards claimed successfully', 'success')
+    await loadTdcRewards()
   } catch (error) {
     console.error('Failed to claim TDC rewards:', error)
     toast.show('Failed to claim TDC rewards', 'error')
+  } finally {
+    loading.hide()
+  }
+}
+
+// 处理 TDC 质押
+const handleTdcStake = async (amount) => {
+  try {
+    loading.show('Staking TDC...')
+    //查询授权额度
+    const allowance = await walletStore.invokeView({
+      contractAddress: currentChainConfig.value.tdcTokenAddress,
+      methodName: "allowance",
+      args:[account.value,currentChainConfig.value.contracts.stakeAddress],
+    })
+    //console.log('allowance:',allowance)
+    if(allowance.result*1 <=0){
+      //开始授权
+      const approveValue = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff").toString(10)
+      await walletStore.contractCall({
+        from: account.value,
+        contractAddress: currentChainConfig.value.tdcTokenAddress,
+        methodName: "approve",
+        args: [currentChainConfig.value.contracts.stakeAddress,approveValue]
+      })
+    }
+    //开始质押
+    await walletStore.contractCall({
+      from: account.value,
+      contractAddress: currentChainConfig.value.contracts.stakeAddress,
+      methodName: "deposit",
+      args: [proxy.$format.toAmount(amount)]
+    })
+    toast.show('Successfully staked TDC', 'success')
+    await loadTdcRewards()
+  } catch (error) {
+    console.error('Failed to stake TDC:', error)
+    toast.show('Failed to stake TDC', 'error')
+  } finally {
+    loading.hide()
+  }
+}
+
+// 处理 TDC 解除质押
+const handleTdcUnstake = async (amount) => {
+  try {
+    loading.show('Unstaking TDC...')
+    const data = {
+      from: account.value,
+      value: 0,
+      contractAddress: currentChainConfig.value.contracts.stakeAddress,
+      methodName: "withdraw",
+      args: [proxy.$format.toAmount(amount)]
+    }
+    await walletStore.contractCall(data)
+    toast.show('Successfully unstaked TDC', 'success')
+    // await loadTdcRewards()
+  } catch (error) {
+    console.error('Failed to unstake TDC:', error)
+    toast.show('Failed to unstake TDC', 'error')
   } finally {
     loading.hide()
   }
@@ -164,7 +263,6 @@ const transferDomain = (domain) => {
 const handleTransfer = async ({ domain, recipient }) => {
   try {
     loading.show('Transferring node...')
-    //console.log('domain, recipient',{ domain, recipient })
     let recipientAddress = recipient;//接收者地址
     //获取域名ID
     const domainId = await walletStore.invokeView({
@@ -172,20 +270,17 @@ const handleTransfer = async ({ domain, recipient }) => {
       methodName: "domainId",
       args: [domain.name]
     })
-    //console.log('tokenId:',domainId)
     const tokenId = domainId.result;
 
     //如果输入的域名则需要解析出来地址
     const lastSuffix = (recipient.split(".")).pop()
     const findItem = suffix.find(item=>item == lastSuffix)
-    //console.log('lastSuffix:',{lastSuffix,findItem})
     if(lastSuffix && findItem){
       const userAddress = await walletStore.invokeView({
         contractAddress: currentChainConfig.value.contracts.domainAddress,
         methodName: "userAddress",
         args: [recipient]
       })
-      //console.log('userAddress:',userAddress)
       if(!userAddress.result) {
         toast.show('The AI Node does not exist', 'error')
         return;
@@ -194,7 +289,6 @@ const handleTransfer = async ({ domain, recipient }) => {
       recipientAddress = domaainAddress;
     }
     const domainSuffix = (domain.name.split('.')).pop();
-    //console.log('domain.name:',domain.name,domainSuffix)
     const from = account.value
     const data = {
       from: from,
@@ -227,8 +321,7 @@ const setPrimaryIdentity = async (domain) => {
       methodDesc: "",
       args: [domain.name,accountPub.value],
     }
-    const resSetPrimaryIdentity = await walletStore.contractCall(data)
-    //console.log('resSetPrimaryIdentity:',resSetPrimaryIdentity)
+    await walletStore.contractCall(data)
     toast.show('Primary node updated', 'success')
     await walletStore.loadDomains()
   } catch (error) {
@@ -249,7 +342,6 @@ const toggleRewards = async (domain) => {
         methodName: "getPriceByDomain",
         args: [domain.name]
     })
-    //console.log('domain price:',price)
     const [domainPrice] = JSON.parse(price);
     const data = {
       from: account.value,
@@ -259,7 +351,6 @@ const toggleRewards = async (domain) => {
       methodDesc: "",
       args: [domain.name,accountPub.value],
     }
-    //console.log('activeAward:',data)
     await walletStore.contractCall(data)
     toast.show(`Rewards ${domain.rewardsActive ? 'deactivated' : 'activated'} successfully`, 'success')
     await walletStore.loadDomains()
