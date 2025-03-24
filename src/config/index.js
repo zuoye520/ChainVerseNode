@@ -27,13 +27,13 @@ export const CHAINS = {
     publicUrl:'https://beta.public1.nuls.io',
     explorer: 'https://beta.nulscan.io',
     nrc721Address: {
-      "tdc":'tNULSeBaN1Lfpg3E1irfDnH2texy34jP2Bd5aN',
+      "tdc":'tNULSeBaN3S3S9hmc2NpCLCrXBhEZyNT4iyMLp',
     },
     tdcTokenAddress:"tNULSeBaN2QVohyKMFt24EgKzrwgww3xgbU97z",
     toolContractAddress:'tNULSeBaMwP81fGuNPRRSpKxLto1o1hQPnUTJQ',
     contracts: {
-      domainAddress:'tNULSeBaN14x5z4hZR1LUGE4Dbx7jD8BveYEDX',
-      stakeAddress:'tNULSeBaN4JirAVjgrvZmDmDLqgkrfaA3CgGxu',
+      domainAddress:'tNULSeBaN7VeQLM3LS5gHEKx1uXSkgKcPLVcLw',
+      stakeAddress:'tNULSeBaN7b4ByXUcnvmYqxbFdab9F2WUgAZ5N',
     }
   }
 }

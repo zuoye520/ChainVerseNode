@@ -49,6 +49,7 @@
 
       <div class="staking-actions">
         <button 
+          v-if="!delegate"
           class="cyber-button primary" 
           @click="showStakeModal = true"
         >
@@ -56,6 +57,7 @@
           Stake TDC
         </button>
         <button 
+          v-if="!delegate"
           class="cyber-button secondary" 
           @click="showUnstakeModal = true"
           :disabled="stakedAmount <= 0"
@@ -167,6 +169,10 @@ const toast = inject('toast')
 const loading = inject('loading')
 
 const props = defineProps({
+  delegate:{
+    type: Boolean,
+    default: false
+  },
   apr:{
     type: String,
     default: '0'

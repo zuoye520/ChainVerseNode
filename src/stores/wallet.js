@@ -180,7 +180,7 @@ export const useWalletStore = defineStore('wallet', () => {
       let result = await invokeView(data)
       if(!result.result) throw result;
       result = JSON.parse(result.result)
-      ////console.log('result:',result)
+      // console.log('result:',result)
       if(!result) return;
       const activeDomains = result.activeDomains.map(domain=>({
         name:domain,
@@ -199,7 +199,7 @@ export const useWalletStore = defineStore('wallet', () => {
       domains.value = [...activeDomains,...inactiveDomains] 
       return domains;
     } catch (error) {
-      ////console.log('loadDomains error:',error)
+      console.error('userDomains error:',error)
       return []
     }
     

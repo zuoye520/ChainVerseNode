@@ -10,7 +10,6 @@
       </div>
 
       <!-- 有域名时显示 -->
-      <template v-if="domains.length">  
         <RewardsStats
           :total-rewards="totalRewards"
           :total-rewards-usd="totalRewardsUsd"
@@ -21,6 +20,7 @@
         
         <!-- TDC Rewards Section -->
         <TdcRewardsStats
+          :delegate ="isStakeDelegate"
           :apr="apr"
           :available-balance="availableBalance"
           :staked-amount = "stakedAmount"
@@ -39,10 +39,9 @@
           @set-primary="setPrimaryIdentity"
           @toggle-rewards="toggleRewards"
         />
-      </template>
 
       <!-- 无域名时显示 -->
-      <div v-else class="no-domains">
+      <!-- <div v-if="domains.length <= 0" class="no-domains">
         <div class="empty-state-icon">
           <ServerIcon class="icon" />
         </div>
@@ -52,7 +51,7 @@
           <PlusIcon class="btn-icon" />
           Register Node
         </router-link>
-      </div>
+      </div> -->
     </div>
 
     <!-- Transfer Modal -->
@@ -89,16 +88,19 @@ const availableBalance = ref('0')
 const stakedAmount = ref('0')
 const apr = ref('0')
 // TDC Rewards data
-const tdcTotalRewards = ref('1000')
-const tdcTotalRewardsUsd = ref('$100.00')
-const tdcUnclaimedRewards = ref('1000')
-const tdcUnclaimedRewardsUsd = ref('$100.00')
+const tdcTotalRewards = ref('0')
+const tdcTotalRewardsUsd = ref('$0')
+const tdcUnclaimedRewards = ref('0')
+const tdcUnclaimedRewardsUsd = ref('$0')
+const isStakeDelegate = ref(false)
 
 
 onMounted(async () => {
   if (account.value) {
     await walletStore.loadDomains()
+    console.log(111)
     await walletStore.loadRewards()
+    console.log(222)
     // Here you would load TDC rewards data
     loadTdcRewards()
   } 
@@ -109,6 +111,16 @@ onMounted(async () => {
     }, 5000);
 })
 
+const sleep = (seconds,msg = "") => {
+    const milliseconds = seconds * 1000;
+    if(msg){
+        log.debug(`%s sleep ${seconds}s`,msg);
+    }else {
+        log.debug(`sleep ${seconds}s`);
+    }
+    
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+  };
 // Load TDC rewards data
 const loadTdcRewards = async () => {
   try {
@@ -128,18 +140,21 @@ const loadTdcRewards = async () => {
       ],
     }
     const result = await walletStore.invokeView(data)
-    //console.log('TDC stake info:', result)
+    console.log('TDC stake info:', result)
     const [depositInfo,unclaimedRewards,balanceOf] = JSON.parse(result.result)
+
+    if(balanceOf) availableBalance.value = proxy.$format.fromAmount(balanceOf) 
     if(!depositInfo) return;
     //console.log('depositInfo:',depositInfo)
-    const {received,amount} = JSON.parse(depositInfo)
+    const {staker,received,amount} = JSON.parse(depositInfo)
+
     // //console.log('received:',received)
     // Update TDC rewards state
+    isStakeDelegate.value = staker != account.value;
     tdcTotalRewards.value = proxy.$format.fromAmount(unclaimedRewards*1+received*1) 
     tdcTotalRewardsUsd.value = '$100.00'
     tdcUnclaimedRewards.value = proxy.$format.fromAmount(unclaimedRewards)
     tdcUnclaimedRewardsUsd.value = '$100.00'
-    availableBalance.value = proxy.$format.fromAmount(balanceOf) 
     stakedAmount.value = proxy.$format.fromAmount(amount) 
     apr.value = (100 * (8.5 * 6 * 60 * 24 * 365) / stakedAmount.value).toFixed(1)
   } catch (error) {
@@ -214,6 +229,7 @@ const handleTdcStake = async (amount) => {
         methodName: "approve",
         args: [currentChainConfig.value.contracts.stakeAddress,approveValue]
       })
+      await sleep(10)
     }
     //开始质押
     await walletStore.contractCall({
